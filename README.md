@@ -30,8 +30,5 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Screenshots
 
-![Alt text](/screenshots/2.png?raw=true=100x20)
-
-![Alt text](/screenshots/1.png?raw=true=100x20)
-
-![Alt text](/screenshots/3.png?raw=true=100x20 "Search")
+<img src="/screenshots/1.png?raw" alt="Kitten"
+	title="A cute kitten" width="150" height="100"/>
