@@ -30,5 +30,6 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Screenshots
 
-<img src="/screenshots/1.png?raw" alt="Kitten"
-	title="A cute kitten" width="150" height="100"/>
+<img src="/screenshots/2.png?raw" alt="Kitten" title="A cute kitten" width="300" height="450"/>
+
+<img src="/screenshots/1.png?raw" alt="Kitten" title="A cute kitten" width="300" height="450"/>
