@@ -27,3 +27,11 @@ samples, guidance on mobile development, and a full API reference.
 * Search files and directories
 * Create folders
 * Delete files and directories
+
+## Screenshots
+
+![Alt text](/screenshots/2.png?raw=true=100x20)
+
+![Alt text](/screenshots/1.png?raw=true=100x20)
+
+![Alt text](/screenshots/3.png?raw=true=100x20 "Search")
