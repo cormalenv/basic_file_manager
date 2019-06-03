@@ -149,14 +149,19 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
   _checkHome() {
     if (widget.home == true)
-      return Text(
-        "Basic file manager: ${widget.path}",
-        style: TextStyle(fontSize: 13),
+      return RichText(
+        text: TextSpan(
+          text: 'Basic File Manager ',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+          children: <TextSpan>[
+            TextSpan(text: widget.path, style: const TextStyle(fontSize: 13.0)),
+          ],
+        ),
       );
     else
       return Text(
         widget.path,
-        style: TextStyle(fontSize: 13),
+        style: const TextStyle(fontSize: 13.0),
       );
   }
 }
