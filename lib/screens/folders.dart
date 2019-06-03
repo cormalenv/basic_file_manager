@@ -7,7 +7,8 @@ import 'package:basic_file_manager/widgets/search.dart';
 
 class Folders extends StatefulWidget {
   final String path;
-  const Folders({@required this.path}) : assert(path != null);
+  final bool home;
+  const Folders({@required this.path, this.home: false}) : assert(path != null);
   @override
   _FoldersState createState() => _FoldersState();
 }
@@ -24,19 +25,13 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text(
-              widget.path,
-              style: TextStyle(fontSize: 13),
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () =>
-                    showSearch(context: context, delegate: Search()),
-              ),
-              AppBarPopupMenu()
-            ]),
+        appBar: AppBar(title: _checkHome(), actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () => showSearch(context: context, delegate: Search()),
+          ),
+          AppBarPopupMenu()
+        ]),
         body: Consumer<FileManagerModel>(
             builder: (context, model, child) => RefreshIndicator(
                   onRefresh: () {
@@ -151,4 +146,17 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
+
+  _checkHome() {
+    if (widget.home == true)
+      return Text(
+        "Basic file manager: ${widget.path}",
+        style: TextStyle(fontSize: 13),
+      );
+    else
+      return Text(
+        widget.path,
+        style: TextStyle(fontSize: 13),
+      );
+  }
 }

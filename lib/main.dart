@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
               if (snapshot.hasError)
                 return Center(child: Text('Error: ${snapshot.error}'));
               return Folders(
+                home: true,
                 path: snapshot.data,
               );
           }
