@@ -31,7 +31,50 @@ class Search extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    return null;
+    return Consumer<FileManagerModel>(
+      builder: (context, model, child) => FutureBuilder<List<FileOrDir>>(
+            future: model.search(
+                path, query), // a previously-obtained Future<String> or null
+            builder: (BuildContext context,
+                AsyncSnapshot<List<FileOrDir>> snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return Text('Press button to start.');
+                case ConnectionState.active:
+                case ConnectionState.waiting:
+                  return Center(child: Text('Awaiting result...'));
+                case ConnectionState.done:
+                  if (snapshot.hasError) return Text("Error");
+                  return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      if (snapshot.data[index].type == "Directory") {
+                        return ListTile(
+                          leading: Icon(Icons.folder),
+                          title: Text(snapshot.data[index].name),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                AnimationlessMaterialPageRoute(
+                                    builder: (context) => Folders(
+                                          path: snapshot.data[index].path,
+                                        )));
+                          },
+                        );
+                      } else if (snapshot.data[index].type == "File") {
+                        return ListTile(
+                          leading: Icon(Icons.image),
+                          title: Text(snapshot.data[index].name),
+                          onTap: () {},
+                        );
+                      }
+                    },
+                  );
+              }
+              return null; // unreachable
+            },
+          ),
+    );
   }
 
   @override
@@ -40,8 +83,8 @@ class Search extends SearchDelegate<String> {
       builder: (context, model, child) => FutureBuilder<List<FileOrDir>>(
             future: model.search(
                 path, query), // a previously-obtained Future<String> or null
-            builder:
-                (BuildContext context, AsyncSnapshot<List<FileOrDir>> snapshot) {
+            builder: (BuildContext context,
+                AsyncSnapshot<List<FileOrDir>> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                   return Text('Press button to start.');
