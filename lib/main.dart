@@ -24,7 +24,6 @@ main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print("MyApp");
     FlutterStatusbarcolor.setStatusBarColor(Color.fromRGBO(135, 137, 134, 1.0));
     return MaterialApp(
       theme: ThemeData(
