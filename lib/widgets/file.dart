@@ -8,7 +8,7 @@ class FileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: InkWell(
-      borderRadius: BorderRadius.circular(40.0),
+      borderRadius: BorderRadius.circular(10.0),
       onTap: onTap,
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
