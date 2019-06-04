@@ -28,7 +28,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    var coreProvider = Provider.of<FileManagerNotifier>(context);
+   
     return Scaffold(
       appBar: AppBar(title: _checkHome(), actions: <Widget>[
         IconButton(
@@ -91,6 +91,8 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
                 ),
               )),
       floatingActionButton: FloatingActionButton(
+        tooltip: "Add Folder Here .",
+        
         child: Icon(Icons.add),
         onPressed: () => showDialog(
             context: context, builder: (context) => CreateFileDialog()),
