@@ -38,7 +38,6 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
                     Flexible(
                         child: TextField(
                       controller: _textEditingController,
-                      maxLength: 50,
                       onChanged: (data) {
                         // Not allowed characters for album name, since we are creating real
                         // folder in linux
