@@ -3,13 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:basic_file_manager/notifiers/core.dart';
 
 class CreateFileDialog extends StatefulWidget {
+
   @override
   _CreateFileDialogState createState() => _CreateFileDialogState();
 }
 
 class _CreateFileDialogState extends State<CreateFileDialog> {
   TextEditingController _textEditingController;
-  bool _allowedAlbumName = true;
+  bool _allowedFolderName = true;
   @override
   void initState() {
     _textEditingController = TextEditingController();
@@ -28,7 +29,7 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
         builder: (context, model, child) => ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: SimpleDialog(
-              title: Text("Add new album"),
+              title: Text("Add New Folder"),
               contentPadding: EdgeInsets.all(20),
               children: <Widget>[
                 // album textfield
@@ -40,7 +41,7 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
                       maxLength: 50,
                       onChanged: (data) {
                         // Not allowed characters for album name, since we are creating real
-                        // folder name in linux
+                        // folder in linux
                         if (data.contains("/") ||
                             data.contains(r"\") ||
                             data.contains(">") ||
@@ -49,25 +50,25 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
                             data.contains(":") ||
                             data.contains(":") ||
                             data.contains("&")) {
-                          if (_allowedAlbumName == true) {
+                          if (_allowedFolderName == true) {
                             setState(() {
-                              _allowedAlbumName = false;
+                              _allowedFolderName = false;
                             });
                           }
                         } else {
-                          if (_allowedAlbumName == false) {
+                          if (_allowedFolderName == false) {
                             setState(() {
-                              _allowedAlbumName = true;
+                              _allowedFolderName = true;
                             });
                           }
                         }
                       },
                       decoration: InputDecoration(
-                          helperText: "Not allowed: / > < | : &",
-                          helperStyle: !_allowedAlbumName
+                          helperText: "Not Allowed: / > < | : &",
+                          helperStyle: !_allowedFolderName
                               ? TextStyle(color: Colors.red)
                               : TextStyle(),
-                          hintText: "Album Name"),
+                          hintText: "Folder Name"),
                     ))
                   ],
                 ),
@@ -89,7 +90,7 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
                     ),
                     // add - confirm button
                     FlatButton(
-                      onPressed: _allowedAlbumName
+                      onPressed: _allowedFolderName
                           ? () {
                               model.createFolderByPath(_textEditingController.text);
                               // leaving dialog

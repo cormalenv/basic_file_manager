@@ -67,7 +67,7 @@ class FileManagerNotifier extends ChangeNotifier {
       currentPath = _path;
     }
     int start = DateTime.now().millisecondsSinceEpoch;
-    print("Looking at: ${p.join(_path.absolute.path, path)}");
+    print("Current directory at: ${p.join(_path.absolute.path, path)}");
     List<FileOrDir> _folders = [];
     try {
       _folders = (await _path.list().toList())

@@ -6,7 +6,7 @@ import 'package:basic_file_manager/notifiers/core.dart';
 
 class ContextDialog extends StatelessWidget {
   final FileOrDir fileOrDir;
-  const ContextDialog({Key key, this.fileOrDir}) : super(key: key);
+  const ContextDialog({Key key, @required this.fileOrDir}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
