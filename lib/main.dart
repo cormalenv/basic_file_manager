@@ -27,6 +27,8 @@ class MyApp extends StatelessWidget {
     FlutterStatusbarcolor.setStatusBarColor(Color.fromRGBO(135, 137, 134, 1.0));
     return MaterialApp(
       theme: ThemeData(
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              backgroundColor: const Color.fromRGBO(135, 137, 134, 1.0)),
           primaryColor: const Color.fromRGBO(135, 137, 134, 1.0),
           iconTheme:
               IconThemeData(color: const Color.fromRGBO(135, 137, 134, 1.0))),
