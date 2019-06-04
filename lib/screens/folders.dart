@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:basic_file_manager/models/app_model.dart';
+import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/widgets/appbar_popup_menu.dart';
 import 'package:basic_file_manager/widgets/context_dialog.dart';
 import 'package:basic_file_manager/widgets/search.dart';
@@ -32,7 +32,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
           ),
           AppBarPopupMenu()
         ]),
-        body: Consumer<FileManagerModel>(
+        body: Consumer<FileManagerNotifier>(
             builder: (context, model, child) => RefreshIndicator(
                   onRefresh: () {
                     return Future.delayed(Duration(milliseconds: 100))

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:basic_file_manager/models/app_model.dart';
+import 'package:basic_file_manager/notifiers/core.dart';
 
 class CreateFileDialog extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FileManagerModel>(
+    return Consumer<FileManagerNotifier>(
         builder: (context, model, child) => ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: SimpleDialog(

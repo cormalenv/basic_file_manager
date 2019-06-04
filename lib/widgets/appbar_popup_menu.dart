@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:basic_file_manager/models/app_model.dart';
+import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/widgets/create_file_dialog.dart';
 
 class AppBarPopupMenu extends StatelessWidget {
@@ -9,7 +9,7 @@ class AppBarPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FileManagerModel>(
+    return Consumer<FileManagerNotifier>(
       builder: (context, model, child) => PopupMenuButton<String>(
           onSelected: (value) {
             if (value == "refresh") {

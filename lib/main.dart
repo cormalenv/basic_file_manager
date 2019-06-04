@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // local files
-import 'package:basic_file_manager/models/app_model.dart';
+import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/screens/folders.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 
 main() {
-  var model = FileManagerModel();
+  var model = FileManagerNotifier();
   model.initialize();
   runApp(MultiProvider(
     providers: [
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           iconTheme:
               IconThemeData(color: const Color.fromRGBO(135, 137, 134, 1.0))),
       home: FutureBuilder<String>(
-        future: Provider.of<FileManagerModel>(context).getRoot(),
+        future: Provider.of<FileManagerNotifier>(context).getRoot(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

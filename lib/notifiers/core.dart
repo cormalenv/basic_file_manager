@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path/path.dart' as p;
 
-class FileManagerModel extends ChangeNotifier {
+class FileManagerNotifier extends ChangeNotifier {
   Directory currentPath;
 
   Future<String> getRoot() async {

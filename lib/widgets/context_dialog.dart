@@ -1,7 +1,7 @@
 import 'package:basic_file_manager/models/file_or_dir.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:basic_file_manager/models/app_model.dart';
+import 'package:basic_file_manager/notifiers/core.dart';
 
 
 class ContextDialog extends StatelessWidget {
@@ -10,7 +10,7 @@ class ContextDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FileManagerModel>(
+    return Consumer<FileManagerNotifier>(
       builder: (context, model, child) => SimpleDialog(
             title: Text(fileOrDir.name),
             children: <Widget>[

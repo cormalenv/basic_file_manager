@@ -4,7 +4,7 @@ import 'package:basic_file_manager/models/file_or_dir.dart';
 import 'package:flutter/material.dart';
 
 // local files
-import 'package:basic_file_manager/models/app_model.dart';
+import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/screens/folders.dart';
 import 'package:basic_file_manager/screens/folders.dart';
 import 'package:basic_file_manager/screens/folders.dart';
@@ -40,7 +40,7 @@ class Search extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    return Consumer<FileManagerModel>(
+    return Consumer<FileManagerNotifier>(
       builder: (context, model, child) => FutureBuilder<List<FileOrDir>>(
             future: model.search(
                 path, query), // a previously-obtained Future<String> or null
@@ -51,7 +51,7 @@ class Search extends SearchDelegate<String> {
                   return Text('Press button to start.');
                 case ConnectionState.active:
                 case ConnectionState.waiting:
-                  return Center(child: Text('Awaiting result...'));
+                  return Center(child: CircularProgressIndicator());
                 case ConnectionState.done:
                   if (snapshot.hasError) return Text("Error");
                   return ListView.builder(
@@ -88,7 +88,7 @@ class Search extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Consumer<FileManagerModel>(
+    return Consumer<FileManagerNotifier>(
       builder: (context, model, child) => FutureBuilder<List<FileOrDir>>(
             future: model.search(
                 path, query), // a previously-obtained Future<String> or null
@@ -99,7 +99,7 @@ class Search extends SearchDelegate<String> {
                   return Text('Press button to start.');
                 case ConnectionState.active:
                 case ConnectionState.waiting:
-                  return Center(child: Text('Awaiting result...'));
+                  return Center(child: CircularProgressIndicator());
                 case ConnectionState.done:
                   if (snapshot.hasError) return Text("Error");
                   return ListView.builder(
