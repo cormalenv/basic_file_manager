@@ -25,7 +25,16 @@ class Search extends SearchDelegate<String> {
   @override
   Widget buildLeading(BuildContext context) {
     // TODO: implement buildLeading
-    return null;
+    return IconButton(
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
+        progress: transitionAnimation,
+      ),
+      onPressed: () {
+        // clearing query
+        close(context, null);
+      },
+    );
   }
 
   @override
