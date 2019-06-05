@@ -83,11 +83,7 @@ class MyApp extends StatelessWidget {
 
       case AppTheme.Dark:
         return ThemeData(
-            scaffoldBackgroundColor: Color.fromRGBO(50, 50, 50, 1.0),
-            textTheme: TextTheme(
-                // display: TextStyle(color: Color.fromRGBO(255, 255, 255, 1.0)),
-                //   body1: TextStyle(color: Color.fromRGBO(255, 255, 255, 1.0)),
-                ),
+            // scaffoldBackgroundColor: const Color.fromRGBO(50, 50, 50, 1.0),
             floatingActionButtonTheme: const FloatingActionButtonThemeData(
                 backgroundColor: const Color.fromRGBO(55, 55, 55, 1.0),
                 foregroundColor: const Color.fromRGBO(255, 255, 255, 1.0)),
@@ -100,7 +96,7 @@ class MyApp extends StatelessWidget {
                     color: const Color.fromRGBO(255, 255, 255, 1.0))),
             primaryColor: const Color.fromRGBO(55, 55, 55, 1.0),
             iconTheme:
-                IconThemeData(color: const Color.fromRGBO(200, 200, 200, 1.0)));
+                IconThemeData(color: const Color.fromRGBO(55, 55, 55, 1.0)));
         break;
 
       // Add more themes here ...
