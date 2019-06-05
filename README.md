@@ -30,6 +30,5 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Screenshots
 
-<img src="/screenshots/2.png?raw" alt="files" width="350" height="600"/>
-<img src="/screenshots/3.png?raw" alt="search" width="350" height="600"/> 
-<img src="/screenshots/1.png?raw" alt="landscape" width="600" height="350"/>
+<img src="/screenshots/all_dark.png?raw" alt="dark" width="350" height="600"/>
+<img src="/screenshots/all_white.png?raw" alt="light" width="350" height="600"/> 
