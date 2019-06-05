@@ -97,8 +97,8 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
         floatingActionButton: preferences.showFloatingButton == true
             ? FloatingActionButton(
                 tooltip: "Create Folder Here",
-                shape: BeveledRectangleBorder(
-                    borderRadius: BorderRadius.circular(7.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 child: Icon(Icons.add),
                 onPressed: () => showDialog(
                     context: context, builder: (context) => CreateFileDialog()),
