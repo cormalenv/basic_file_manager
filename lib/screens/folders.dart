@@ -28,7 +28,6 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(title: _checkHome(), actions: <Widget>[
         IconButton(
@@ -92,7 +91,6 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
               )),
       floatingActionButton: FloatingActionButton(
         tooltip: "Add Folder Here .",
-        
         child: Icon(Icons.add),
         onPressed: () => showDialog(
             context: context, builder: (context) => CreateFileDialog()),
@@ -105,15 +103,15 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
   _checkHome() {
     if (widget.home == true)
-      return RichText(
-        text: TextSpan(
-          text: 'Basic File Manager ',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-          children: <TextSpan>[
-            TextSpan(text: widget.path, style: const TextStyle(fontSize: 13.0)),
-          ],
-        ),
-      );
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Basic File Manager",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            Text(widget.path)
+          ]);
     else
       return Text(
         widget.path,
