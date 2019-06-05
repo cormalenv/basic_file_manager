@@ -22,11 +22,14 @@ class _SettingsState extends State<Settings> {
                 padding: EdgeInsets.all(10.0),
                 children: <Widget>[
                   ListTile(
-                    leading: Text("Theme",
+                    leading: Text("Theme:",
                         style: TextStyle(
-                          fontSize: 16.0,
+                          fontSize: 20.0,
                         )),
-                    title: Text("${preferences.theme}"),
+                    title: Text("${preferences.theme.toString().split('.')[1]}",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        )),
                     onTap: () => showDialog(
                         context: context, builder: (context) => ThemesDialog()),
                     dense: true,
