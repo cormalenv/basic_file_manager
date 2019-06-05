@@ -34,6 +34,21 @@ class _SettingsState extends State<Settings> {
                         context: context, builder: (context) => ThemesDialog()),
                     dense: true,
                   ),
+                  Divider(),
+                  ListTile(
+                    leading: Text("Show Floating Action Button:",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        )),
+                    title: Switch(
+                      value: preferences.showFloatingButton,
+                      onChanged: (value) {
+                        preferences.showFloatingButton = value;
+                      },
+                      
+                    ),
+                    dense: true,
+                  ),
                   Divider()
                 ],
               ),

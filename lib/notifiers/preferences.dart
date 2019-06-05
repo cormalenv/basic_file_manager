@@ -12,18 +12,32 @@ class PreferencesBlocError extends Error {
 
 class PreferencesState {
   final AppTheme theme;
+  final bool showFloatingButton;
 
-  const PreferencesState(this.theme);
+  const PreferencesState({@required this.theme, this.showFloatingButton});
 }
 
 class PreferencesNotifier with ChangeNotifier {
-  PreferencesState _currentPrefs = PreferencesState(AppTheme.Light);
+  PreferencesState _currentPrefs = PreferencesState(
+    theme: AppTheme.Light,
+  );
 
   AppTheme get theme => _currentPrefs.theme;
 
+  bool get showFloatingButton => _currentPrefs.showFloatingButton;
+
+  set showFloatingButton(newValue) {
+    if (newValue == _currentPrefs.showFloatingButton) return;
+    _currentPrefs = PreferencesState(
+        showFloatingButton: newValue, theme: _currentPrefs.theme);
+    notifyListeners();
+    _savePreferences();
+  }
+
   set theme(AppTheme newValue) {
     if (newValue == _currentPrefs.theme) return;
-    _currentPrefs = PreferencesState(newValue);
+    _currentPrefs = PreferencesState(
+        theme: newValue, showFloatingButton: _currentPrefs.showFloatingButton);
     notifyListeners();
     _savePreferences();
   }
@@ -35,15 +49,18 @@ class PreferencesNotifier with ChangeNotifier {
   Future<void> _loadSharedPreferences() async {
     var sharedPrefs = await SharedPreferences.getInstance();
     int theme = sharedPrefs.getInt('theme') ?? 0;
+    bool showFloatingButton = sharedPrefs.getBool('showFloatingButton') ?? true;
 
-    _currentPrefs = PreferencesState(AppTheme.values[theme]);
-
-    print("Current theme: ${AppTheme.values[theme]}");
+    _currentPrefs = PreferencesState(
+        theme: AppTheme.values[theme], showFloatingButton: showFloatingButton);
+    print("Loading preferences");
     notifyListeners();
   }
 
   Future<void> _savePreferences() async {
     var sharedPrefs = await SharedPreferences.getInstance();
     await sharedPrefs.setInt('theme', _currentPrefs.theme.index);
+    await sharedPrefs.setBool(
+        'showFloatingButton', _currentPrefs.showFloatingButton);
   }
 }
