@@ -27,6 +27,12 @@ samples, guidance on mobile development, and a full API reference.
 * Search files and directories
 * Create folders
 * Delete files and directories
+* Themes
+  * Light
+  * Dark
+  * Gray
+* Settings
+  * Show floating action button
 
 ## Screenshots
 
