@@ -36,5 +36,5 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Screenshots
 
-<img src="/screenshots/all_dark.png?raw" alt="dark" width="600" height="600"/>
-<img src="/screenshots/all_white.png?raw" alt="light" width="600" height="600"/> 
+<img src="/screenshots/all_dark.png?raw" alt="dark" width="650" height="600"/>
+<img src="/screenshots/all_white.png?raw" alt="light" width="650" height="600"/> 
