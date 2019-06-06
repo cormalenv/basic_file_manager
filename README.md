@@ -11,8 +11,8 @@ A few resources to get you started if this is your first Flutter project:
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
 ## Running the app
@@ -24,17 +24,27 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Features
 
-* Search files and directories
-* Create folders
-* Delete files and directories
-* Themes
-  * Light
-  * Dark
-  * Gray
-* Settings
-  * Show floating action button
+- Search files and directories
+- Create folders
+- Delete files and directories
+- Themes
+  - Light
+  - Dark
+  - Gray
+- Settings
+  - Show floating action button
 
 ## Screenshots
 
 <img src="/screenshots/all_dark.png?raw" alt="dark" width="650" height="600"/>
 <img src="/screenshots/all_white.png?raw" alt="light" width="650" height="600"/> 
+
+
+## Donate
+
+- PayPal me: [https://www.paypal.me/eagle6789](https://www.paypal.me/eagle6789)
+- PayPal account: me49544@gmail.com
+- Bitcoin: 1AP6bypSaFt7ptFydmjuWWWS8a9MCWRt3m
+
+## Contact me
+- me.dev67894@gmail.com
