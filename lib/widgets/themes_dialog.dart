@@ -1,4 +1,4 @@
-import 'package:basic_file_manager/models/theme.dart';
+
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

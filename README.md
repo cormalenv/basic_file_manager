@@ -2,6 +2,14 @@
 
 A simple **application** for managing files on Android devices using Flutter framework
 
+- [basic_file_manager](#basicfilemanager)
+  - [Getting Started](#getting-started)
+  - [Running the app](#running-the-app)
+  - [Features](#features)
+  - [Screenshots](#screenshots)
+  - [Donate](#donate)
+  - [Contact me](#contact-me)
+  
 ## Getting Started
 
 This project is a starting point for a Flutter application.
@@ -25,6 +33,7 @@ samples, guidance on mobile development, and a full API reference.
 ## Features
 
 - Search files and directories
+  - Search in context path
 - Create folders
 - Delete files and directories
 - Themes
@@ -39,7 +48,6 @@ samples, guidance on mobile development, and a full API reference.
 <img src="/screenshots/all_dark.png?raw" alt="dark" width="650" height="600"/>
 <img src="/screenshots/all_white.png?raw" alt="light" width="650" height="600"/> 
 
-
 ## Donate
 
 - PayPal me: [https://www.paypal.me/eagle6789](https://www.paypal.me/eagle6789)
@@ -47,4 +55,5 @@ samples, guidance on mobile development, and a full API reference.
 - Bitcoin: 1AP6bypSaFt7ptFydmjuWWWS8a9MCWRt3m
 
 ## Contact me
-- me.dev67894@gmail.com
+
+- me49544@gmail.com

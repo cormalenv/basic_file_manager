@@ -1,18 +1,23 @@
 // dart
 import 'dart:io';
 
-// packages
-import 'package:basic_file_manager/models/file_or_dir.dart';
-
+// framework
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+
+// packages
 import 'package:path/path.dart' as p;
+import 'package:simple_permissions/simple_permissions.dart';
+import 'package:path_provider/path_provider.dart';
+
+// local files
+import 'package:basic_file_manager/models/file_or_dir.dart';
+import 'package:basic_file_manager/notifiers/preferences.dart';
+import 'package:basic_file_manager/utils.dart' as utils;
 
 class FileManagerNotifier extends ChangeNotifier {
   Directory currentPath;
 
-  Future<String> getRoot() async {
+  Future<String> getRootPath() async {
     return (await getExternalStorageDirectory()).absolute.path;
   }
 
@@ -61,7 +66,9 @@ class FileManagerNotifier extends ChangeNotifier {
   }
 
   Future<List<FileOrDir>> getSubFoldersAndFiles(String path,
-      {changeCurrentPath: true}) async {
+      {changeCurrentPath: true,
+      Sorting sortedBy: Sorting.Date,
+      reverse: false}) async {
     Directory _path = Directory(path);
     if (changeCurrentPath) {
       currentPath = _path;
@@ -75,20 +82,21 @@ class FileManagerNotifier extends ChangeNotifier {
               name: p.split(path.absolute.path).last,
               path: path.absolute.path,
               type: path.runtimeType.toString().replaceFirst("_", "")))
-          .toList()
-            ..sort((FileOrDir f1, FileOrDir f2) => f1.type.compareTo(f2.type));
+          .toList();
     } catch (e) {
       print(e);
       return [];
     }
+    var _sortedFolders = utils.sort(_folders, sortedBy, reverse: reverse);
 
     int end = DateTime.now().millisecondsSinceEpoch;
     print("Time: ${end - start}ms");
 
-    return _folders;
+    return _sortedFolders;
   }
 
-  Future<List<FileOrDir>> search(String path, String query) async {
+  Future<List<FileOrDir>> search(String path, String query,
+      {boolmatchCase: false, regex: false}) async {
     Directory _path;
     if (path == null) {
       _path = await getExternalStorageDirectory();
@@ -124,10 +132,15 @@ class FileManagerNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Directory> createFolderByPath(String path) {
-    var _path = Directory(p.join(currentPath.path, path)).create();
-    notifyListeners();
-    return _path;
+  Future<Directory> createFolderByPath(String path) async {
+    var _directory = Directory(p.join(currentPath.path, path));
+    if (!_directory.existsSync()) {
+      _directory.create();
+      notifyListeners();
+    } else {
+      return null;
+    }
+    return _directory;
   }
 
   Future<void> refresh() async {

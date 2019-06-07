@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:basic_file_manager/notifiers/core.dart';
+import 'package:toast/toast.dart';
 
 class CreateFileDialog extends StatefulWidget {
-
   @override
   _CreateFileDialogState createState() => _CreateFileDialogState();
 }
@@ -26,83 +26,93 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
   @override
   Widget build(BuildContext context) {
     return Consumer<FileManagerNotifier>(
-        builder: (context, model, child) => ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: SimpleDialog(
-              title: Text("Add New Folder"),
-              contentPadding: EdgeInsets.all(20),
-              children: <Widget>[
-                // album textfield
-                Row(
+        builder: (context, model, child) => Builder(
+            builder: (context) => ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: SimpleDialog(
+                  title: Text("Add New Folder"),
+                  contentPadding: EdgeInsets.all(20),
                   children: <Widget>[
-                    Flexible(
-                        child: TextField(
-                      controller: _textEditingController,
-                      onChanged: (data) {
-                        // Not allowed characters for album name, since we are creating real
-                        // folder in linux
-                        if (data.contains("/") ||
-                            data.contains(r"\") ||
-                            data.contains(">") ||
-                            data.contains("<") ||
-                            data.contains("|") ||
-                            data.contains(":") ||
-                            data.contains(":") ||
-                            data.contains("&")) {
-                          if (_allowedFolderName == true) {
-                            setState(() {
-                              _allowedFolderName = false;
-                            });
-                          }
-                        } else {
-                          if (_allowedFolderName == false) {
-                            setState(() {
-                              _allowedFolderName = true;
-                            });
-                          }
-                        }
-                      },
-                      decoration: InputDecoration(
-                          helperText: "Not Allowed: / > < | : &",
-                          helperStyle: !_allowedFolderName
-                              ? TextStyle(color: Colors.red)
-                              : TextStyle(),
-                          hintText: "Folder Name"),
-                    ))
-                  ],
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  // cancel
-                  children: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "Cancel",
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                    ),
-                    // add - confirm button
-                    FlatButton(
-                      onPressed: _allowedFolderName
-                          ? () {
-                              model.createFolderByPath(_textEditingController.text);
-                              // leaving dialog
-                              Navigator.of(context).pop();
+                    // album textfield
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                            child: TextField(
+                          controller: _textEditingController,
+                          onChanged: (data) {
+                            // Not allowed characters for album name, since we are creating real
+                            // folder in linux
+                            if (data.contains("/") ||
+                                data.contains(r"\") ||
+                                data.contains(">") ||
+                                data.contains("<") ||
+                                data.contains("|") ||
+                                data.contains(":") ||
+                                data.contains(":") ||
+                                data.contains("&")) {
+                              if (_allowedFolderName == true) {
+                                setState(() {
+                                  _allowedFolderName = false;
+                                });
+                              }
+                            } else {
+                              if (_allowedFolderName == false) {
+                                setState(() {
+                                  _allowedFolderName = true;
+                                });
+                              }
                             }
-                          : null,
-                      child: Text(
-                        "Create",
-                      ),
+                          },
+                          decoration: InputDecoration(
+                              helperText: "Not Allowed: / > < | : &",
+                              helperStyle: !_allowedFolderName
+                                  ? TextStyle(color: Colors.red)
+                                  : TextStyle(),
+                              hintText: "Folder Name"),
+                        ))
+                      ],
                     ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      // cancel
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "Cancel",
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                        ),
+                        //  create button
+                        FlatButton(
+                          onPressed: _allowedFolderName
+                              ? () async {
+                                  var _directory =
+                                      await model.createFolderByPath(
+                                          _textEditingController.text);
+
+                                  if (_directory != null) {
+                                    // leaving dialog
+                                    Navigator.of(context).pop();
+                                  } else {
+                                    Toast.show("Folder already Exists", context,
+                                        duration: Toast.LENGTH_SHORT,
+                                        gravity: Toast.TOP);
+                                  }
+                                }
+                              : null,
+                          child: Text(
+                            "Create",
+                          ),
+                        ),
+                      ],
+                    )
                   ],
-                )
-              ],
-            )));
+                ))));
   }
 }

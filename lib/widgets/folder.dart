@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class FolderWidget extends StatelessWidget {
   final fileOrDir;
-  const FolderWidget({this.fileOrDir});
+  const FolderWidget({@required this.fileOrDir});
   @override
   Widget build(BuildContext context) {
     return Container(

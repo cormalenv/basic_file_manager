@@ -1,5 +1,4 @@
 // framework
-import 'package:basic_file_manager/models/theme.dart';
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: _appTheme(context),
       home: FutureBuilder<String>(
-        future: Provider.of<FileManagerNotifier>(context).getRoot(),
+        future: Provider.of<FileManagerNotifier>(context).getRootPath(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

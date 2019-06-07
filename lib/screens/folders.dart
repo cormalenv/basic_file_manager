@@ -1,16 +1,21 @@
+// framework
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+
+// packages
+import 'package:provider/provider.dart';
+
+// local files
+import 'package:basic_file_manager/notifiers/core.dart';
+import 'package:basic_file_manager/widgets/appbar_popup_menu.dart';
+import 'package:basic_file_manager/widgets/context_dialog.dart';
+import 'package:basic_file_manager/widgets/search.dart';
 import 'package:basic_file_manager/models/file_or_dir.dart';
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/widgets/create_file_dialog.dart';
 import 'package:basic_file_manager/widgets/file.dart';
 import 'package:basic_file_manager/widgets/folder.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:basic_file_manager/notifiers/core.dart';
-import 'package:basic_file_manager/widgets/appbar_popup_menu.dart';
-import 'package:basic_file_manager/widgets/context_dialog.dart';
-import 'package:basic_file_manager/widgets/search.dart';
 
 class Folders extends StatefulWidget {
   final String path;
@@ -94,19 +99,9 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
                     },
                   ),
                 )),
-        floatingActionButton: preferences.showFloatingButton == true
-            ? FloatingActionButton(
-                tooltip: "Create Folder Here",
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                child: Icon(Icons.add),
-                onPressed: () => showDialog(
-                    context: context, builder: (context) => CreateFileDialog()),
-              )
-            : Container(
-                height: 0.0,
-                width: 0.0,
-              ));
+
+        // check if the floating action button is activated in settings
+        floatingActionButton: new FolderFloatingActionButton());
   }
 
   @override
@@ -116,17 +111,46 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
     if (widget.home == true)
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               "Basic File Manager",
-              style: TextStyle(fontSize: 17.0),
+              style: const TextStyle(fontSize: 17.0),
             ),
-            Text(widget.path)
+            Text(
+              "Internal Storage",
+              style: TextStyle(fontSize: 13.0),
+            )
           ]);
     else
       return Text(
         widget.path,
         style: const TextStyle(fontSize: 13.0),
+      );
+  }
+}
+
+class FolderFloatingActionButton extends StatelessWidget {
+  const FolderFloatingActionButton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final preferences = Provider.of<PreferencesNotifier>(context);
+    if (preferences.showFloatingButton == true) {
+      return FloatingActionButton(
+        tooltip: "Create Folder Here",
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        child: Icon(Icons.add),
+        onPressed: () => showDialog(
+            context: context, builder: (context) => CreateFileDialog()),
+      );
+    } else
+      return Container(
+        width: 0.0,
+        height: 0.0,
       );
   }
 }

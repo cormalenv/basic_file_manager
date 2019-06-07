@@ -22,32 +22,23 @@ class _SettingsState extends State<Settings> {
                 padding: EdgeInsets.all(10.0),
                 children: <Widget>[
                   ListTile(
-                    leading: Text("Theme:",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                        )),
-                    title: Text("${preferences.theme.toString().split('.')[1]}",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                        )),
+                    leading: Text(
+                      "Theme",
+                    ),
+                    title: Text(
+                      "${preferences.theme.toString().split('.')[1]}",
+                    ),
                     onTap: () => showDialog(
                         context: context, builder: (context) => ThemesDialog()),
                     dense: true,
                   ),
                   Divider(),
-                  ListTile(
-                    leading: Text("Show Floating Action Button:",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                        )),
-                    title: Switch(
-                      value: preferences.showFloatingButton,
-                      onChanged: (value) {
-                        preferences.showFloatingButton = value;
-                      },
-                      
-                    ),
-                    dense: true,
+                  SwitchListTile.adaptive(
+                    value: preferences.showFloatingButton,
+                    onChanged: (value) {
+                      preferences.showFloatingButton = value;
+                    },
+                    title: Text("Show Floating Action Button"),
                   ),
                   Divider()
                 ],
