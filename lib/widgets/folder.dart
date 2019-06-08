@@ -13,6 +13,7 @@ class FolderWidget extends StatelessWidget {
       onTap: () {
         Navigator.push(
             context,
+            
             MaterialPageRoute(
                 builder: (context) => Folders(path: fileOrDir.path)));
       },

@@ -10,7 +10,7 @@ class AppBarPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FileManagerNotifier>(
+    return Consumer<CoreNotifier>(
       builder: (context, model, child) => PopupMenuButton<String>(
           onSelected: (value) {
             if (value == "refresh") {

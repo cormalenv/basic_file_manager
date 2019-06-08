@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rxdart/subjects.dart';
 
 class PreferencesBlocError extends Error {
   final String message;
@@ -12,7 +13,7 @@ class PreferencesBlocError extends Error {
 class PreferencesState {
   final AppTheme theme;
   final sorting;
-  final bool showFloatingButton;
+  final BehaviorSubject<bool> showFloatingButton;
 
   const PreferencesState(
       {@required this.theme,
@@ -21,21 +22,34 @@ class PreferencesState {
 }
 
 class PreferencesNotifier with ChangeNotifier {
+  // Initial preferebces' values
   PreferencesState _currentPrefs = PreferencesState(
-    showFloatingButton: true,
+    showFloatingButton: BehaviorSubject.seeded(true),
     theme: AppTheme.Light,
     sorting: Sorting.Type,
   );
 
-  bool get showFloatingButton => _currentPrefs.showFloatingButton;
+  Stream<bool> get showFloatingButton {
+    return _currentPrefs.showFloatingButton.stream.asBroadcastStream();
+  }
 
-  set showFloatingButton(newValue) {
-    if (newValue == _currentPrefs.showFloatingButton) return;
-    _currentPrefs = PreferencesState(
-        showFloatingButton: newValue,
-        theme: _currentPrefs.theme,
-        sorting: _currentPrefs.sorting);
-    notifyListeners();
+  // set showFloatingButton(bool newValue) {
+  //   _currentPrefs.showFloatingButton.stream.listen((onData) {
+  //     if (newValue == onData) return;
+  //   });
+  //   _currentPrefs = PreferencesState(
+  //       showFloatingButton: StreamController.broadcast().sink..add(newValue),
+  //       theme: _currentPrefs.theme,
+  //       sorting: _currentPrefs.sorting);
+  //   notifyListeners();
+  //   _savePreferences();
+  // }
+
+  // note(Naga): the name can cannot be as the getter,
+  // if it set as the getter you will get error.
+  // If someone has a better way of doing this, please do not hesitate
+  setFloatingButtonEnabled(bool newValue) {
+    _currentPrefs.showFloatingButton.add(newValue);
     _savePreferences();
   }
 
@@ -73,11 +87,13 @@ class PreferencesNotifier with ChangeNotifier {
     // '0' is the initial value
     int themeIndex = sharedPrefs.getInt('theme') ?? 0;
     int sortIndex = sharedPrefs.getInt('sort') ?? 0;
-    bool showFloatingButton = sharedPrefs.getBool('showFloatingButton') ?? true;
+    bool _showFloatingButton =
+        sharedPrefs.getBool('showFloatingButton') ?? true;
     _currentPrefs = PreferencesState(
         theme: AppTheme.values[themeIndex],
-        showFloatingButton: showFloatingButton,
+        showFloatingButton: BehaviorSubject.seeded(_showFloatingButton),
         sorting: Sorting.values[sortIndex]);
+
     notifyListeners();
   }
 
@@ -86,8 +102,11 @@ class PreferencesNotifier with ChangeNotifier {
     var sharedPrefs = await SharedPreferences.getInstance();
     await sharedPrefs.setInt('theme', _currentPrefs.theme.index);
     await sharedPrefs.setInt('sort', _currentPrefs.sorting.index);
-    await sharedPrefs.setBool(
-        'showFloatingButton', _currentPrefs.showFloatingButton);
+    // note(Naga): if someone has a better way of doing this, please do not hesitate
+    // listening on showFloatingButton strean then assign a value
+    _currentPrefs.showFloatingButton.stream.listen((data) async {
+      await sharedPrefs.setBool('showFloatingButton', data);
+    });
   }
 }
 

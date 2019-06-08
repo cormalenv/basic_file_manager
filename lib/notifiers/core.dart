@@ -14,7 +14,7 @@ import 'package:basic_file_manager/models/file_or_dir.dart';
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/utils.dart' as utils;
 
-class FileManagerNotifier extends ChangeNotifier {
+class CoreNotifier extends ChangeNotifier {
   Directory currentPath;
 
   Future<String> getRootPath() async {

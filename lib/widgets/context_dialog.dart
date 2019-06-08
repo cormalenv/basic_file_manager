@@ -10,7 +10,7 @@ class ContextDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FileManagerNotifier>(
+    return Consumer<CoreNotifier>(
       builder: (context, model, child) => SimpleDialog(
             title: Text(fileOrDir.name),
             children: <Widget>[

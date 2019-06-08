@@ -33,12 +33,35 @@ class _SettingsState extends State<Settings> {
                     dense: true,
                   ),
                   Divider(),
-                  SwitchListTile.adaptive(
-                    value: preferences.showFloatingButton,
-                    onChanged: (value) {
-                      preferences.showFloatingButton = value;
+                  StreamBuilder<bool>(
+                    stream:
+                        preferences.showFloatingButton, //	a	Stream<int>	or	null
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasError)
+                        return Text('Error:	${snapshot.error}');
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                          return Text('Select	lot');
+                        case ConnectionState.waiting:
+                          return Text('Awaiting	bids...');
+                        case ConnectionState.active:
+                          return SwitchListTile.adaptive(
+                            value: snapshot.data,
+                            onChanged: (value) =>
+                                preferences.setFloatingButtonEnabled(value),
+                            title: Text("Show Floating Action Button"),
+                          );
+                        case ConnectionState.done:
+                          return SwitchListTile.adaptive(
+                            value: snapshot.data,
+                            onChanged: (value) =>
+                                preferences.setFloatingButtonEnabled(value),
+                            title: Text("Show Floating Action Button"),
+                          );
+                      }
+                      return null;
                     },
-                    title: Text("Show Floating Action Button"),
                   ),
                   Divider()
                 ],

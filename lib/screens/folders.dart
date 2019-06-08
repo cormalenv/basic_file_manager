@@ -34,9 +34,16 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final preferences = Provider.of<PreferencesNotifier>(context);
 
+    print("Folders: ${widget.path}");
     return Scaffold(
         appBar: AppBar(title: _checkHome(), actions: <Widget>[
           IconButton(
@@ -45,63 +52,74 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
           ),
           AppBarPopupMenu()
         ]),
-        body: Consumer<FileManagerNotifier>(
-            builder: (context, model, child) => RefreshIndicator(
-                  onRefresh: () {
-                    return Future.delayed(Duration(milliseconds: 100))
-                        .then((_) => setState(() {}));
-                  },
-                  child: FutureBuilder<List<FileOrDir>>(
-                    future: model.getSubFoldersAndFiles(widget.path),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.none:
-                          return Text('Press button to start.');
-                        case ConnectionState.active:
-                        case ConnectionState.waiting:
-                          return Center(child: CircularProgressIndicator());
-                        case ConnectionState.done:
-                          if (snapshot.hasError)
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
+        body: RefreshIndicator(
+          onRefresh: () {
+            return Future.delayed(Duration(milliseconds: 100))
+                .then((_) => setState(() {}));
+          },
+          child: FutureBuilder<List<FileOrDir>>(
+            future: Provider.of<CoreNotifier>(context, listen: false)
+                .getSubFoldersAndFiles(widget.path),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return Text('Press button to start.');
+                case ConnectionState.active:
+                case ConnectionState.waiting:
+                  return Center(child: CircularProgressIndicator());
+                case ConnectionState.done:
+                  if (snapshot.hasError)
+                    return Center(child: Text('Error: ${snapshot.error}'));
 
-                          if (snapshot.data.length != 0)
-                            return GridView.builder(
-                                controller: _scrollController,
-                                key: PageStorageKey(widget.path),
-                                padding: EdgeInsets.only(
-                                    left: 10.0, right: 10.0, top: 0),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 4),
-                                itemCount: snapshot.data.length,
-                                addAutomaticKeepAlives: true,
-                                itemBuilder: (context, index) {
-                                  if (snapshot.data[index].type ==
-                                      "Directory") {
-                                    return FolderWidget(
-                                        fileOrDir: snapshot.data[index]);
+                  if (snapshot.data.length != 0)
+                    return GridView.builder(
+                        controller: _scrollController,
+                        key: PageStorageKey(widget.path),
+                        padding:
+                            EdgeInsets.only(left: 10.0, right: 10.0, top: 0),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          if (snapshot.data[index].type == "Directory") {
+                            return FolderWidget(
+                                fileOrDir: snapshot.data[index]);
 
-                                    // file
-                                  } else if (snapshot.data[index].type ==
-                                      "File") {
-                                    return FileWidget(
-                                      name: snapshot.data[index].name,
-                                    );
-                                  }
-                                });
-                          else
-                            return Center(
-                              child: Text("Empty Folder!"),
+                            // file
+                          } else if (snapshot.data[index].type == "File") {
+                            return FileWidget(
+                              name: snapshot.data[index].name,
                             );
-                      }
-                      return null; // unreachable
-                    },
-                  ),
-                )),
+                          }
+                        });
+                  else
+                    return Center(
+                      child: Text("Empty Folder!"),
+                    );
+              }
+              return null; // unreachable
+            },
+          ),
+        ),
 
         // check if the floating action button is activated in settings
-        floatingActionButton: new FolderFloatingActionButton());
+        floatingActionButton: StreamBuilder<bool>(
+          stream: preferences.showFloatingButton, //	a	Stream<int>	or	null
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            if (snapshot.hasError) return Text('Error:	${snapshot.error}');
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Text('Select	lot');
+              case ConnectionState.waiting:
+                return Text('Awaiting	bids...');
+              case ConnectionState.active:
+                return FolderFloatingActionButton(enabled: snapshot.data);
+              case ConnectionState.done:
+                FolderFloatingActionButton(enabled: snapshot.data);
+            }
+            return null;
+          },
+        ));
   }
 
   @override
@@ -131,14 +149,12 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 }
 
 class FolderFloatingActionButton extends StatelessWidget {
-  const FolderFloatingActionButton({
-    Key key,
-  }) : super(key: key);
+  final bool enabled;
+  const FolderFloatingActionButton({Key key, this.enabled}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final preferences = Provider.of<PreferencesNotifier>(context);
-    if (preferences.showFloatingButton == true) {
+    if (enabled == true) {
       return FloatingActionButton(
         tooltip: "Create Folder Here",
         shape: RoundedRectangleBorder(
