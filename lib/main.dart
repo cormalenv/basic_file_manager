@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 
 main() {
-  var core = FileManagerNotifier();
+  CoreNotifier core = CoreNotifier();
   core.initialize();
   runApp(MultiProvider(
     providers: [
@@ -27,10 +27,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(_statusBarColor(context));
+    print("Main");
     return MaterialApp(
       theme: _appTheme(context),
       home: FutureBuilder<String>(
-        future: Provider.of<FileManagerNotifier>(context).getRootPath(),
+        future: Provider.of<CoreNotifier>(context, listen: false).getRootPath(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
     switch (preferences.theme) {
       case AppTheme.Light:
         return ThemeData(
-           toggleableActiveColor: _dark,
+            toggleableActiveColor: _dark,
             floatingActionButtonTheme: FloatingActionButtonThemeData(
                 backgroundColor: _light, foregroundColor: _dark),
             appBarTheme: AppBarTheme(
