@@ -38,7 +38,7 @@ class Search extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Consumer<FileManagerNotifier>(
+    return Consumer<CoreNotifier>(
       builder: (context, model, child) =>
           new _Results(future: model.search(path, query)),
     );
@@ -46,7 +46,7 @@ class Search extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Consumer<FileManagerNotifier>(
+    return Consumer<CoreNotifier>(
         builder: (context, model, child) => _Results(
               future: model.search(path, query),
             ));
