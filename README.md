@@ -9,6 +9,7 @@ A simple **application** for managing files on Android devices using Flutter fra
   - [Screenshots](#screenshots)
   - [Donate](#donate)
   - [Contact me](#contact-me)
+  - [Inspiration](#inspiration)
   
 ## Getting Started
 
@@ -57,3 +58,7 @@ samples, guidance on mobile development, and a full API reference.
 ## Contact me
 
 - me49544@gmail.com
+
+## Inspiration
+
+- [Filip Hracek](https://github.com/filiph/hn_app/tree/master/lib/src) from the Google and the Boring Show
