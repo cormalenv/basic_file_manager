@@ -25,7 +25,7 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FileManagerNotifier>(
+    return Consumer<CoreNotifier>(
         builder: (context, model, child) => Builder(
             builder: (context) => ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
