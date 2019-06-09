@@ -61,4 +61,4 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Inspiration
 
-- [Filip Hracek](https://github.com/filiph/hn_app/tree/master/lib/src) from the Google and the Boring Show
+- [Filip Hracek](https://github.com/filiph) from the Google and the Boring Show
