@@ -13,14 +13,13 @@ class FolderWidget extends StatelessWidget {
       onTap: () {
         Navigator.push(
             context,
-            
             MaterialPageRoute(
                 builder: (context) => Folders(path: fileOrDir.path)));
       },
       onLongPress: () {
         showDialog(
             context: context,
-            builder: (context) => ContextDialog(fileOrDir: fileOrDir));
+            builder: (context) => FolderContextDialog(fileOrDir: fileOrDir));
       },
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [

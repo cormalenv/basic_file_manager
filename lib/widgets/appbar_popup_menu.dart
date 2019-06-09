@@ -17,7 +17,7 @@ class AppBarPopupMenu extends StatelessWidget {
               model.refresh();
             } else if (value == "folder") {
               showDialog(
-                  context: context, builder: (context) => CreateFileDialog());
+                  context: context, builder: (context) => CreateFileDialog(path: path));
             } else if (value == "settings") {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Settings()));

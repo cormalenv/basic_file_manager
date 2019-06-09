@@ -1,16 +1,20 @@
 // dart
+import 'dart:async';
 import 'dart:io';
 
 // framework
+import 'package:basic_file_manager/models/file.dart';
+import 'package:basic_file_manager/models/folder.dart';
 import 'package:flutter/foundation.dart';
 
 // packages
 import 'package:path/path.dart' as p;
+import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 
 // local files
-import 'package:basic_file_manager/models/file_or_dir.dart';
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/utils.dart' as utils;
 
@@ -21,8 +25,8 @@ class CoreNotifier extends ChangeNotifier {
     return (await getExternalStorageDirectory()).absolute.path;
   }
 
-  List<FileOrDir> folders = [];
-  List<FileOrDir> subFolders = [];
+  List<dynamic> folders = [];
+  List<dynamic> subFolders = [];
 
   Future<void> initialize() async {
     print("Initializing");
@@ -40,100 +44,75 @@ class CoreNotifier extends ChangeNotifier {
     }
   }
 
-  Future<List<FileOrDir>> getFoldersAndFiles({changeCurrentPath: true}) async {
-    Directory _path = await getExternalStorageDirectory();
-    if (changeCurrentPath) {
-      currentPath = _path;
-    }
-    int start = DateTime.now().millisecondsSinceEpoch;
-    List<FileOrDir> _folders = [];
-    try {
-      _folders = (await _path.list().toList())
-          .map((path) => FileOrDir(
-              name: p.split(path.absolute.path).last,
-              path: path.absolute.path,
-              type: path.runtimeType.toString().replaceFirst("_", "")))
-          .toList()
-            ..sort((FileOrDir f1, FileOrDir f2) => f1.type.compareTo(f2.type));
-    } catch (error) {
-      print(error);
-      return [];
-    }
-    int end = DateTime.now().millisecondsSinceEpoch;
-    print("Time: ${end - start}ms");
-    folders = _folders;
-    return _folders;
-  }
-
-  Future<List<FileOrDir>> getSubFoldersAndFiles(String path,
+  Future<List<dynamic>> getSubFoldersAndFiles(String path,
       {changeCurrentPath: true,
-      Sorting sortedBy: Sorting.Date,
-      reverse: false}) async {
+      Sorting sortedBy: Sorting.Type,
+      reverse: false,
+      recursive: false}) async {
     Directory _path = Directory(path);
-    if (changeCurrentPath) {
-      currentPath = _path;
-    }
+
     int start = DateTime.now().millisecondsSinceEpoch;
     print("Current directory at: ${p.join(_path.absolute.path, path)}");
-    List<FileOrDir> _folders = [];
+    List<dynamic> _files;
     try {
-      _folders = (await _path.list().toList())
-          .map((path) => FileOrDir(
+      _files = (await _path.list(recursive: recursive).toList()).map((path) {
+        if (FileSystemEntity.isDirectorySync(path.path))
+          return MyFolder(
               name: p.split(path.absolute.path).last,
               path: path.absolute.path,
-              type: path.runtimeType.toString().replaceFirst("_", "")))
-          .toList();
+              type: "Directory");
+        else
+          return MyFile(
+              name: p.split(path.absolute.path).last,
+              path: path.absolute.path,
+              type: "File");
+      }).toList();
     } catch (e) {
       print(e);
       return [];
     }
-    var _sortedFolders = utils.sort(_folders, sortedBy, reverse: reverse);
 
+    if (sortedBy != null) {
+      return utils.sort(_files, sortedBy, reverse: reverse);
+    }
     int end = DateTime.now().millisecondsSinceEpoch;
     print("Time: ${end - start}ms");
-
-    return _sortedFolders;
+    return _files;
   }
 
-  Future<List<FileOrDir>> search(String path, String query,
-      {boolmatchCase: false, regex: false}) async {
-    Directory _path;
-    if (path == null) {
-      _path = await getExternalStorageDirectory();
-    } else {
-      _path = Directory(path);
-    }
-
+  Future<List<dynamic>> search(String path, String query,
+      {bool matchCase: false, regex: false, recursive: true}) async {
     int start = DateTime.now().millisecondsSinceEpoch;
-    var _fileorDir = (await _path
-        .list(recursive: true, followLinks: true)
-        .toList())
-      ..retainWhere((test) =>
-          p.split(test.absolute.path).last.toLowerCase().contains(query));
 
-    List<FileOrDir> _fileOrDirList = _fileorDir
-        .map((path) => FileOrDir(
-            name: p.split(path.absolute.path).last,
-            path: path.absolute.path,
-            type: path.runtimeType.toString().replaceFirst("_", "")))
-        .toList();
+    List<dynamic> files =
+        await getSubFoldersAndFiles(path, recursive: recursive)
+          ..retainWhere(
+              (test) => test.name.toLowerCase().contains(query.toLowerCase()));
 
     int end = DateTime.now().millisecondsSinceEpoch;
-    print("Time: ${end - start}ms");
-    return _fileOrDirList;
+    print("Search time: ${end - start}ms");
+    return files;
   }
 
-  Future<void> delete(FileOrDir fileOrDir) async {
-    if (fileOrDir.type == "File") {
-      File(fileOrDir.path).delete(recursive: true);
-    } else {
-      Directory(fileOrDir.path).delete(recursive: true);
+  Future<void> delete(path) async {
+    try {
+      if (path.type == "File") {
+        print("Deleting file @ ${path.path}");
+        await File(path.path).delete(recursive: true);
+      } else {
+        print("Deleting folder @ ${path.path}");
+
+        await Directory(path.path).delete(recursive: true);
+      }
+      notifyListeners();
+    } catch (e) {
+      print(e);
     }
-    notifyListeners();
   }
 
-  Future<Directory> createFolderByPath(String path) async {
-    var _directory = Directory(p.join(currentPath.path, path));
+  Future<Directory> createFolderByPath(String path, String folderName) async {
+    print("Creating folder: $folderName @ $path");
+    var _directory = Directory(p.join(path, folderName));
     if (!_directory.existsSync()) {
       _directory.create();
       notifyListeners();

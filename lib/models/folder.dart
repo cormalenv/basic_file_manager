@@ -1,4 +1,6 @@
-class FileOrDir implements Comparable<FileOrDir> {
+
+
+class MyFolder implements Comparable<MyFolder> {
   final String path;
   final String name;
   bool selected;
@@ -6,7 +8,7 @@ class FileOrDir implements Comparable<FileOrDir> {
   /// directory or file
   final String type;
 
-  FileOrDir({this.path, this.name, this.type, this.selected: false});
+  MyFolder({this.path, this.name, this.type, this.selected: false});
 
   @override
   int compareTo(other) {

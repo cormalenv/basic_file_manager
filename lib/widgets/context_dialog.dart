@@ -45,3 +45,39 @@ class FolderContextDialog extends StatelessWidget {
             ));
   }
 }
+
+class FileContextDialog extends StatelessWidget {
+  final myFile;
+  const FileContextDialog({Key key, @required this.myFile}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CoreNotifier>(
+        builder: (context, model, child) => ClipRect(
+              child: SimpleDialog(
+                title: Text(myFile.name),
+                children: <Widget>[
+                  SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        model.delete(myFile);
+                      },
+                      child: ListTile(
+                          leading: Icon(Icons.delete), title: Text("Delete"))),
+                  SimpleDialogOption(
+                    onPressed: () {
+                      OpenFile.open(myFile.path);
+
+                      Navigator.pop(context);
+                    },
+                    child: ListTile(
+                        leading: Icon(
+                          Icons.share,
+                        ),
+                        title: Text("Share")),
+                  )
+                ],
+              ),
+            ));
+  }
+}

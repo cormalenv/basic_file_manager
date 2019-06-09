@@ -1,4 +1,8 @@
 // framework
+import 'dart:io';
+
+import 'package:basic_file_manager/models/file.dart';
+import 'package:basic_file_manager/models/folder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -11,7 +15,6 @@ import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/widgets/appbar_popup_menu.dart';
 import 'package:basic_file_manager/widgets/context_dialog.dart';
 import 'package:basic_file_manager/widgets/search.dart';
-import 'package:basic_file_manager/models/file_or_dir.dart';
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/widgets/create_file_dialog.dart';
 import 'package:basic_file_manager/widgets/file.dart';
@@ -48,7 +51,8 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
         appBar: AppBar(title: _checkHome(), actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () => showSearch(context: context, delegate: Search()),
+            onPressed: () => showSearch(
+                context: context, delegate: Search(path: widget.path)),
           ),
           AppBarPopupMenu()
         ]),
@@ -57,7 +61,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
             return Future.delayed(Duration(milliseconds: 100))
                 .then((_) => setState(() {}));
           },
-          child: FutureBuilder<List<FileOrDir>>(
+          child: FutureBuilder<List<dynamic>>(
             future: Provider.of<CoreNotifier>(context, listen: false)
                 .getSubFoldersAndFiles(widget.path),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -81,15 +85,15 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
                             crossAxisCount: 4),
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
-                          if (snapshot.data[index].type == "Directory") {
+                          if (snapshot.data[index] is MyFolder) {
                             return FolderWidget(
                                 fileOrDir: snapshot.data[index]);
 
                             // file
-                          } else if (snapshot.data[index].type == "File") {
+                          } else if (snapshot.data[index] is MyFile) {
                             return FileWidget(
-                              name: snapshot.data[index].name,
-                            );
+                                name: snapshot.data[index].name,
+                                myFile: snapshot.data[index]);
                           }
                         });
                   else
@@ -113,9 +117,13 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
               case ConnectionState.waiting:
                 return Text('Awaiting	bids...');
               case ConnectionState.active:
-                return FolderFloatingActionButton(enabled: snapshot.data);
+                return FolderFloatingActionButton(
+                  enabled: snapshot.data,
+                  path: widget.path,
+                );
               case ConnectionState.done:
-                FolderFloatingActionButton(enabled: snapshot.data);
+                FolderFloatingActionButton(
+                    enabled: snapshot.data, path: widget.path);
             }
             return null;
           },
@@ -150,7 +158,9 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
 class FolderFloatingActionButton extends StatelessWidget {
   final bool enabled;
-  const FolderFloatingActionButton({Key key, this.enabled}) : super(key: key);
+  final String path;
+  const FolderFloatingActionButton({Key key, this.enabled, @required this.path})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +171,10 @@ class FolderFloatingActionButton extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child: Icon(Icons.add),
         onPressed: () => showDialog(
-            context: context, builder: (context) => CreateFileDialog()),
+            context: context,
+            builder: (context) => CreateFileDialog(
+                  path: path,
+                )),
       );
     } else
       return Container(

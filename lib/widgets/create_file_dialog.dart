@@ -4,6 +4,8 @@ import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:toast/toast.dart';
 
 class CreateFileDialog extends StatefulWidget {
+  final String path;
+  const CreateFileDialog({@required this.path});
   @override
   _CreateFileDialogState createState() => _CreateFileDialogState();
 }
@@ -94,7 +96,8 @@ class _CreateFileDialogState extends State<CreateFileDialog> {
                               ? () async {
                                   var _directory =
                                       await model.createFolderByPath(
-                                          _textEditingController.text);
+                                          widget.path,
+                                          _textEditingController?.text);
 
                                   if (_directory != null) {
                                     // leaving dialog

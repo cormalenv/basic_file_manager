@@ -1,12 +1,13 @@
 // framework
+import 'dart:io';
+
 import 'package:basic_file_manager/animations.dart';
-import 'package:basic_file_manager/models/file_or_dir.dart';
+import 'package:basic_file_manager/models/file.dart';
+import 'package:basic_file_manager/models/folder.dart';
 import 'package:flutter/material.dart';
 
 // local files
 import 'package:basic_file_manager/notifiers/core.dart';
-import 'package:basic_file_manager/screens/folders.dart';
-import 'package:basic_file_manager/screens/folders.dart';
 import 'package:basic_file_manager/screens/folders.dart';
 import 'package:provider/provider.dart';
 
@@ -39,16 +40,62 @@ class Search extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     return Consumer<CoreNotifier>(
-      builder: (context, model, child) =>
-          new _Results(future: model.search(path, query)),
-    );
+        builder: (context, model, child) => FutureBuilder(
+              future: model.search(path, query,
+                  recursive: true), //	a	Stream<int>	or	null
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) return Text('Error:	${snapshot.error}');
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Text('Select	lot');
+                  case ConnectionState.waiting:
+                    return Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                          CircularProgressIndicator(),
+                          Text('Searching...')
+                        ]));
+                  case ConnectionState.active:
+                    return Text('${snapshot.data}');
+                  case ConnectionState.done:
+                    return _Results(
+                      results: snapshot.data,
+                    );
+                }
+                return null;
+              },
+            ));
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     return Consumer<CoreNotifier>(
-        builder: (context, model, child) => _Results(
-              future: model.search(path, query),
+        builder: (context, model, child) => FutureBuilder(
+              future: model.search(path, query,
+                  recursive: true), //	a	Stream<int>	or	null
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) return Text('Error:	${snapshot.error}');
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Text('Select	lot');
+                  case ConnectionState.waiting:
+                    return Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                          CircularProgressIndicator(),
+                          Text('Searching...')
+                        ]));
+                  case ConnectionState.active:
+                    return Text('${snapshot.data}');
+                  case ConnectionState.done:
+                    return _Results(
+                      results: snapshot.data,
+                    );
+                }
+                return null;
+              },
             ));
   }
 }
@@ -57,68 +104,38 @@ class Search extends SearchDelegate<String> {
 class _Results extends StatelessWidget {
   const _Results({
     Key key,
-    @required this.future,
+    @required this.results,
   }) : super(key: key);
 
-  final Future<dynamic> future;
+  final List<dynamic> results;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<FileOrDir>>(
-      future: future, // a previously-obtained Future<String> or null
-      builder: (BuildContext context, AsyncSnapshot<List<FileOrDir>> snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return Text('Press button to start.');
-          case ConnectionState.active:
-          case ConnectionState.waiting:
-            return Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                  CircularProgressIndicator(),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 23.0),
-                  ),
-                  Text('Searching...')
-                ]));
-          case ConnectionState.done:
-            if (snapshot.hasError) return Center(child: Text("Error"));
-
-            if (snapshot.data.length != 0) {
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                addAutomaticKeepAlives: true,
-                key: key,
-                itemBuilder: (context, index) {
-                  if (snapshot.data[index].type == "Directory") {
-                    return ListTile(
-                      leading: Icon(Icons.folder),
-                      title: Text(snapshot.data[index].name),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            AnimationlessMaterialPageRoute(
-                                builder: (context) => Folders(
-                                      path: snapshot.data[index].path,
-                                    )));
-                      },
-                    );
-                  } else if (snapshot.data[index].type == "File") {
-                    return ListTile(
-                      leading: Icon(Icons.image),
-                      title: Text(snapshot.data[index].name),
-                      onTap: () {},
-                    );
-                  }
-                },
-              );
-            } else
-              return Center(
-                child: Text("Nothing was Found!"),
-              );
+    return ListView.builder(
+      itemCount: results.length,
+      addAutomaticKeepAlives: true,
+      key: key,
+      itemBuilder: (context, index) {
+        if (results[index] is MyFolder) {
+          return ListTile(
+            leading: Icon(Icons.folder),
+            title: Text(results[index].name),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  AnimationlessMaterialPageRoute(
+                      builder: (context) => Folders(
+                            path: results[index].path,
+                          )));
+            },
+          );
+        } else if (results[index] is MyFile) {
+          return ListTile(
+            leading: Icon(Icons.image),
+            title: Text(results[index].name),
+            onTap: () {},
+          );
         }
-        return null; // unreachable
       },
     );
   }
