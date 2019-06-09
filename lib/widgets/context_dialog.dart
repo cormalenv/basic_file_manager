@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // package
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 import 'package:open_file/open_file.dart';
 
 // local

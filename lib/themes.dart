@@ -1,6 +1,8 @@
-import 'package:basic_file_manager/notifiers/preferences.dart';
+// framework
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
+// local files
+import 'package:basic_file_manager/notifiers/preferences.dart';
 
 Color getMainColor(AppTheme theme) {
   switch (theme) {

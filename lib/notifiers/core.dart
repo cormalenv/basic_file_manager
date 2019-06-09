@@ -9,8 +9,6 @@ import 'package:flutter/foundation.dart';
 
 // packages
 import 'package:path/path.dart' as p;
-import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 
