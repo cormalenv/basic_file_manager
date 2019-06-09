@@ -1,11 +1,5 @@
 // framework
-import 'dart:io';
-
-import 'package:basic_file_manager/models/file.dart';
-import 'package:basic_file_manager/models/folder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 // packages
 import 'package:provider/provider.dart';
@@ -13,11 +7,12 @@ import 'package:provider/provider.dart';
 // local files
 import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/widgets/appbar_popup_menu.dart';
-import 'package:basic_file_manager/widgets/context_dialog.dart';
 import 'package:basic_file_manager/widgets/search.dart';
 import 'package:basic_file_manager/notifiers/preferences.dart';
-import 'package:basic_file_manager/widgets/create_file_dialog.dart';
+import 'package:basic_file_manager/widgets/create_dialog.dart';
 import 'package:basic_file_manager/widgets/file.dart';
+import 'package:basic_file_manager/models/file.dart';
+import 'package:basic_file_manager/models/folder.dart';
 import 'package:basic_file_manager/widgets/folder.dart';
 
 class Folders extends StatefulWidget {
@@ -44,8 +39,8 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final preferences = Provider.of<PreferencesNotifier>(context);
-
     print("Folders: ${widget.path}");
     return Scaffold(
         appBar: AppBar(title: _checkHome(), actions: <Widget>[
@@ -85,6 +80,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
                             crossAxisCount: 4),
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
+                          // folder
                           if (snapshot.data[index] is MyFolder) {
                             return FolderWidget(
                                 fileOrDir: snapshot.data[index]);
@@ -106,7 +102,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
           ),
         ),
 
-        // check if the floating action button is activated in settings
+        // check if the in app floating action button is activated in settings
         floatingActionButton: StreamBuilder<bool>(
           stream: preferences.showFloatingButton, //	a	Stream<int>	or	null
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -166,13 +162,13 @@ class FolderFloatingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (enabled == true) {
       return FloatingActionButton(
-        tooltip: "Create Folder Here",
+        tooltip: "Create folder here ...",
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child: Icon(Icons.add),
         onPressed: () => showDialog(
             context: context,
-            builder: (context) => CreateFileDialog(
+            builder: (context) => CreateFolderDialog(
                   path: path,
                 )),
       );
