@@ -3,14 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:toast/toast.dart';
 
-class CreateFileDialog extends StatefulWidget {
+class CreateFolderDialog extends StatefulWidget {
   final String path;
-  const CreateFileDialog({@required this.path});
+
+  /// Show a dialog that accept allowed linux name
+  ///
+  const CreateFolderDialog({@required this.path});
   @override
   _CreateFileDialogState createState() => _CreateFileDialogState();
 }
 
-class _CreateFileDialogState extends State<CreateFileDialog> {
+class _CreateFileDialogState extends State<CreateFolderDialog> {
   TextEditingController _textEditingController;
   bool _allowedFolderName = true;
   @override
