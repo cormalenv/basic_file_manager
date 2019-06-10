@@ -72,6 +72,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
 
                   if (snapshot.data.length != 0)
                     return GridView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         controller: _scrollController,
                         key: PageStorageKey(widget.path),
                         padding:
@@ -141,7 +142,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
             ),
             Text(
               "Internal Storage",
-              style: TextStyle(fontSize: 13.0),
+              style: const TextStyle(fontSize: 13.0),
             )
           ]);
     else
