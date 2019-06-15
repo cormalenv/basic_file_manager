@@ -1,5 +1,7 @@
 // framework
+import 'package:basic_file_manager/widgets/context_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
 
 // packages
 import 'package:provider/provider.dart';
@@ -49,57 +51,72 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
             onPressed: () => showSearch(
                 context: context, delegate: Search(path: widget.path)),
           ),
-          AppBarPopupMenu()
+          AppBarPopupMenu(path: widget.path)
         ]),
         body: RefreshIndicator(
           onRefresh: () {
             return Future.delayed(Duration(milliseconds: 100))
                 .then((_) => setState(() {}));
           },
-          child: FutureBuilder<List<dynamic>>(
-            future: Provider.of<CoreNotifier>(context, listen: false)
-                .getFoldersAndFiles(widget.path, hidden: preferences.hidden),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return Text('Press button to start.');
-                case ConnectionState.active:
-                case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator());
-                case ConnectionState.done:
-                  if (snapshot.hasError)
-                    return Center(child: Text('Error: ${snapshot.error}'));
+          child: Consumer<CoreNotifier>(
+            builder: (context, model, child) => FutureBuilder<List<dynamic>>(
+                  future: model.getFoldersAndFiles(widget.path,
+                      hidden: preferences.hidden),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Text('Press button to start.');
+                      case ConnectionState.active:
+                      case ConnectionState.waiting:
+                        return Center(child: CircularProgressIndicator());
+                      case ConnectionState.done:
+                        if (snapshot.hasError)
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        if (snapshot.data.length != 0)
+                          return GridView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              controller: _scrollController,
+                              key: PageStorageKey(widget.path),
+                              padding: EdgeInsets.only(
+                                  left: 10.0, right: 10.0, top: 0),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 4),
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                // folder
+                                if (snapshot.data[index] is MyFolder) {
+                                  return FolderWidget(
+                                      fileOrDir: snapshot.data[index]);
 
-                  if (snapshot.data.length != 0)
-                    return GridView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        controller: _scrollController,
-                        key: PageStorageKey(widget.path),
-                        padding:
-                            EdgeInsets.only(left: 10.0, right: 10.0, top: 0),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4),
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          // folder
-                          if (snapshot.data[index] is MyFolder) {
-                            return FolderWidget(
-                                fileOrDir: snapshot.data[index]);
-
-                            // file
-                          } else if (snapshot.data[index] is MyFile) {
-                            return FileWidget(
-                                name: snapshot.data[index].name,
-                                myFile: snapshot.data[index]);
-                          }
-                        });
-                  else
-                    return Center(
-                      child: Text("Empty Folder!"),
-                    );
-              }
-              return null; // unreachable
-            },
+                                  // file
+                                } else if (snapshot.data[index] is MyFile) {
+                                  return FileWidget(
+                                    name: snapshot.data[index].name,
+                                    onTap: () {
+                                      OpenFile.open(snapshot.data[index].path);
+                                    },
+                                    onLongPress: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              FileContextDialog(
+                                                path: snapshot.data[index].path,
+                                                name: snapshot.data[index].name,
+                                              ));
+                                    },
+                                  );
+                                }
+                              });
+                        else
+                          return Center(
+                            child: Text("Empty Folder!"),
+                          );
+                    }
+                    return null; // unreachable
+                  },
+                ),
           ),
         ),
 

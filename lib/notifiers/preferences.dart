@@ -10,6 +10,7 @@ class PreferencesBlocError extends Error {
   PreferencesBlocError(this.message);
 }
 
+// State design pattern
 class PreferencesState {
   final bool hidden;
   final AppTheme theme;
@@ -24,7 +25,7 @@ class PreferencesState {
 }
 
 class PreferencesNotifier with ChangeNotifier {
-  // Initial preferebces' values
+  // Initial preferences' values
   PreferencesState _currentPrefs = PreferencesState(
       showFloatingButton: BehaviorSubject.seeded(true),
       theme: AppTheme.Light,

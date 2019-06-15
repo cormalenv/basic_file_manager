@@ -6,7 +6,7 @@ import 'package:basic_file_manager/widgets/create_dialog.dart';
 
 class AppBarPopupMenu extends StatelessWidget {
   final String path;
-  const AppBarPopupMenu({Key key, this.path}) : super(key: key);
+  const AppBarPopupMenu({Key key, @required this.path}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

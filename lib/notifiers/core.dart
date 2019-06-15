@@ -3,20 +3,18 @@ import 'dart:async';
 import 'dart:io';
 
 // framework
-import 'package:basic_file_manager/models/file.dart';
-import 'package:basic_file_manager/models/folder.dart';
 import 'package:flutter/foundation.dart';
 
 // packages
 import 'package:path/path.dart' as p;
-import 'package:path/path.dart';
-import 'package:provider/provider.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 
 // local files
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/utils.dart' as utils;
+import 'package:basic_file_manager/models/file.dart';
+import 'package:basic_file_manager/models/folder.dart';
 
 class CoreNotifier extends ChangeNotifier {
   Directory currentPath;
@@ -53,7 +51,7 @@ class CoreNotifier extends ChangeNotifier {
     Directory _path = Directory(path);
 
     int start = DateTime.now().millisecondsSinceEpoch;
-    print("Current directory at: ${p.join(_path.absolute.path, path)}");
+
     List<dynamic> _files;
     try {
       _files = (await _path.list(recursive: recursive).toList()).map((path) {
@@ -69,6 +67,7 @@ class CoreNotifier extends ChangeNotifier {
               type: "File");
       }).toList();
 
+      // Removing hidden files & folders from the list
       if (!hidden) {
         print("Core: excluding hidden");
         _files.removeWhere((test) {
@@ -81,7 +80,7 @@ class CoreNotifier extends ChangeNotifier {
     }
 
     int end = DateTime.now().millisecondsSinceEpoch;
-    print("Elapsed time [Core]: ${end - start}ms");
+    print("\nElapsed time [Core]: ${end - start}ms");
     return utils.sort(_files, sortedBy, reverse: reverse);
   }
 
@@ -102,30 +101,37 @@ class CoreNotifier extends ChangeNotifier {
     return files;
   }
 
-  Future<void> delete(path) async {
+  Future<void> delete(path, String type) async {
     try {
-      if (path.type == "File") {
+      if (type == "File") {
         print("Deleting file @ ${path.path}");
-        await File(path.path).delete(recursive: true);
-      } else {
+        await File(path.path).delete();
+        notifyListeners();
+      } else if (type == "Directory") {
         print("Deleting folder @ ${path.path}");
-
-        await Directory(path.path).delete(recursive: true);
+        await Directory(path.path)
+            .delete(recursive: true)
+            .then((_) => notifyListeners());
       }
       notifyListeners();
     } catch (e) {
-      CoreNotifierError(e);
+      CoreNotifierError(e.toString());
     }
   }
 
   Future<Directory> createFolderByPath(String path, String folderName) async {
     print("Creating folder: $folderName @ $path");
     var _directory = Directory(p.join(path, folderName));
-    if (!_directory.existsSync()) {
-      _directory.create();
-      notifyListeners();
-    } else {
-      return null;
+    try {
+      if (!_directory.existsSync()) {
+        _directory.create();
+        notifyListeners();
+      } else {
+        CoreNotifierError("File already exists");
+      }
+      return _directory;
+    } catch (e) {
+      CoreNotifierError(e);
     }
     return _directory;
   }
@@ -136,6 +142,6 @@ class CoreNotifier extends ChangeNotifier {
 }
 
 class CoreNotifierError extends Error {
-  final message;
+  final String message;
   CoreNotifierError(this.message);
 }

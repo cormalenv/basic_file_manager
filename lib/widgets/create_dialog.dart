@@ -7,7 +7,6 @@ class CreateFolderDialog extends StatefulWidget {
   final String path;
 
   /// Show a dialog that accept allowed linux name
-  ///
   const CreateFolderDialog({@required this.path});
   @override
   _CreateFileDialogState createState() => _CreateFileDialogState();
@@ -46,15 +45,10 @@ class _CreateFileDialogState extends State<CreateFolderDialog> {
                           controller: _textEditingController,
                           onChanged: (data) {
                             // Not allowed characters for album name, since we are creating real
-                            // folder in linux
+                            // folder on linux
                             if (data.contains("/") ||
-                                data.contains(r"\") ||
-                                data.contains(">") ||
-                                data.contains("<") ||
-                                data.contains("|") ||
-                                data.contains(":") ||
-                                data.contains(":") ||
-                                data.contains("&")) {
+                                data.contains('NULL') ||
+                                data.contains('\0')) {
                               if (_allowedFolderName == true) {
                                 setState(() {
                                   _allowedFolderName = false;
@@ -69,7 +63,7 @@ class _CreateFileDialogState extends State<CreateFolderDialog> {
                             }
                           },
                           decoration: InputDecoration(
-                              helperText: "Not Allowed: / > < | : &",
+                              helperText: " Disallowed Chararcters: / \0",
                               helperStyle: !_allowedFolderName
                                   ? TextStyle(color: Colors.red)
                                   : TextStyle(),

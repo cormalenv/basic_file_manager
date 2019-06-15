@@ -23,10 +23,10 @@ class FolderContextDialog extends StatelessWidget {
                   SimpleDialogOption(
                       onPressed: () {
                         Navigator.pop(context);
-                        model.delete(fileOrDir);
+                        model.delete(fileOrDir, 'Directory');
                       },
                       child: ListTile(
-                          leading: Icon(Icons.delete), title: Text("Delete"))),
+                          leading: Icon(Icons.delete), title: Text('Delete'))),
                   SimpleDialogOption(
                     onPressed: () {
                       OpenFile.open(fileOrDir.path);
@@ -37,7 +37,7 @@ class FolderContextDialog extends StatelessWidget {
                         leading: Icon(
                           Icons.share,
                         ),
-                        title: Text("Share")),
+                        title: Text('Share')),
                   )
                 ],
               ),
@@ -46,26 +46,28 @@ class FolderContextDialog extends StatelessWidget {
 }
 
 class FileContextDialog extends StatelessWidget {
-  final myFile;
-  const FileContextDialog({Key key, @required this.myFile}) : super(key: key);
+  final String path;
+  final String name;
+  const FileContextDialog({Key key, @required this.path, @required this.name})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<CoreNotifier>(
         builder: (context, model, child) => ClipRect(
               child: SimpleDialog(
-                title: Text(myFile.name),
+                title: Text(name),
                 children: <Widget>[
                   SimpleDialogOption(
                       onPressed: () {
                         Navigator.pop(context);
-                        model.delete(myFile);
+                        model.delete(path, 'File');
                       },
                       child: ListTile(
-                          leading: Icon(Icons.delete), title: Text("Delete"))),
+                          leading: Icon(Icons.delete), title: Text('Delete'))),
                   SimpleDialogOption(
                     onPressed: () {
-                      OpenFile.open(myFile.path);
+                      OpenFile.open(path);
 
                       Navigator.pop(context);
                     },
@@ -73,7 +75,7 @@ class FileContextDialog extends StatelessWidget {
                         leading: Icon(
                           Icons.share,
                         ),
-                        title: Text("Share")),
+                        title: Text('Share')),
                   )
                 ],
               ),
