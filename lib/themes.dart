@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 // local files
 import 'package:basic_file_manager/notifiers/preferences.dart';
 
+var _light = const Color.fromRGBO(255, 255, 255, 1.0);
+var _gray = Color.fromRGBO(189, 195, 199, 1.0);
+var _dark = const Color.fromRGBO(55, 55, 55, 1.0);
+
 Color getMainColor(AppTheme theme) {
   switch (theme) {
     case AppTheme.Light:
-      return Color.fromRGBO(255, 255, 255, 1.0);
+      return _light;
       break;
     case AppTheme.Gray:
-      return Color.fromRGBO(135, 137, 134, 1.0);
+      return _gray;
       break;
 
     case AppTheme.Dark:
-      return Color.fromRGBO(55, 55, 55, 1.0);
+      return _dark;
       break;
 
     // Add more themes here ...
@@ -24,10 +28,6 @@ Color getMainColor(AppTheme theme) {
 }
 
 ThemeData appThemeData(AppTheme theme) {
-  var _dark = const Color.fromRGBO(55, 55, 55, 1.0);
-  var _gray = Color.fromRGBO(120, 120, 120, 1.0);
-  var _light = const Color.fromRGBO(255, 255, 255, 1.0);
-
   switch (theme) {
     case AppTheme.Light:
       return ThemeData(
