@@ -58,7 +58,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/unknown_file_type.png
+    - assets/unknown_file_type2.png # source: https://www.iconfinder.com/icons/285688/empty_file_icon
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
