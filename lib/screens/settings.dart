@@ -33,6 +33,7 @@ class _SettingsState extends State<Settings> {
                     dense: true,
                   ),
                   Divider(),
+                  // floating action button
                   StreamBuilder<bool>(
                     stream:
                         preferences.showFloatingButton, //	a	Stream<int>	or	null
@@ -44,7 +45,7 @@ class _SettingsState extends State<Settings> {
                         case ConnectionState.none:
                           return Text('Select	lot');
                         case ConnectionState.waiting:
-                          return Text('Awaiting	bids...');
+                          return Center(child: Text('Awaiting	bids...'));
                         case ConnectionState.active:
                           return SwitchListTile.adaptive(
                             value: snapshot.data,
@@ -63,7 +64,13 @@ class _SettingsState extends State<Settings> {
                       return null;
                     },
                   ),
-                  Divider()
+
+                  Divider(),
+                  SwitchListTile.adaptive(
+                    value: preferences.hidden,
+                    onChanged: (value) => preferences.hidden = value,
+                    title: Text("Show Hidden"),
+                  )
                 ],
               ),
         ));

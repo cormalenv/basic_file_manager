@@ -9,6 +9,8 @@ import 'package:flutter/foundation.dart';
 
 // packages
 import 'package:path/path.dart' as p;
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -42,11 +44,12 @@ class CoreNotifier extends ChangeNotifier {
     }
   }
 
-  Future<List<dynamic>> getSubFoldersAndFiles(String path,
+  Future<List<dynamic>> getFoldersAndFiles(String path,
       {changeCurrentPath: true,
       Sorting sortedBy: Sorting.Type,
       reverse: false,
-      recursive: false}) async {
+      recursive: false,
+      hidden: false}) async {
     Directory _path = Directory(path);
 
     int start = DateTime.now().millisecondsSinceEpoch;
@@ -65,25 +68,32 @@ class CoreNotifier extends ChangeNotifier {
               path: path.absolute.path,
               type: "File");
       }).toList();
+
+      if (!hidden) {
+        print("Core: excluding hidden");
+        _files.removeWhere((test) {
+          print("\tfiltering: " + test.name);
+          return test.name.startsWith('.') == true;
+        });
+      }
     } catch (e) {
-      print(e);
-      return [];
+      CoreNotifierError(e);
     }
 
-    if (sortedBy != null) {
-      return utils.sort(_files, sortedBy, reverse: reverse);
-    }
     int end = DateTime.now().millisecondsSinceEpoch;
-    print("Time: ${end - start}ms");
-    return _files;
+    print("Elapsed time [Core]: ${end - start}ms");
+    return utils.sort(_files, sortedBy, reverse: reverse);
   }
 
   Future<List<dynamic>> search(String path, String query,
-      {bool matchCase: false, regex: false, recursive: true}) async {
+      {bool matchCase: false,
+      regex: false,
+      recursive: true,
+      bool hidden: false}) async {
     int start = DateTime.now().millisecondsSinceEpoch;
 
     List<dynamic> files =
-        await getSubFoldersAndFiles(path, recursive: recursive)
+        await getFoldersAndFiles(path, recursive: recursive, hidden: hidden)
           ..retainWhere(
               (test) => test.name.toLowerCase().contains(query.toLowerCase()));
 
@@ -104,7 +114,7 @@ class CoreNotifier extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      print(e);
+      CoreNotifierError(e);
     }
   }
 
@@ -123,4 +133,9 @@ class CoreNotifier extends ChangeNotifier {
   Future<void> refresh() async {
     notifyListeners();
   }
+}
+
+class CoreNotifierError extends Error {
+  final message;
+  CoreNotifierError(this.message);
 }

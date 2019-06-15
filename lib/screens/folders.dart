@@ -58,7 +58,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
           },
           child: FutureBuilder<List<dynamic>>(
             future: Provider.of<CoreNotifier>(context, listen: false)
-                .getSubFoldersAndFiles(widget.path),
+                .getFoldersAndFiles(widget.path, hidden: preferences.hidden),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:

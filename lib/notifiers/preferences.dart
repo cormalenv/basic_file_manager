@@ -11,12 +11,14 @@ class PreferencesBlocError extends Error {
 }
 
 class PreferencesState {
+  final bool hidden;
   final AppTheme theme;
   final sorting;
   final BehaviorSubject<bool> showFloatingButton;
 
   const PreferencesState(
       {@required this.theme,
+      @required this.hidden,
       @required this.showFloatingButton,
       @required this.sorting});
 }
@@ -24,26 +26,26 @@ class PreferencesState {
 class PreferencesNotifier with ChangeNotifier {
   // Initial preferebces' values
   PreferencesState _currentPrefs = PreferencesState(
-    showFloatingButton: BehaviorSubject.seeded(true),
-    theme: AppTheme.Light,
-    sorting: Sorting.Type,
-  );
+      showFloatingButton: BehaviorSubject.seeded(true),
+      theme: AppTheme.Light,
+      sorting: Sorting.Type,
+      hidden: false);
+
+  bool get hidden => _currentPrefs.hidden;
+  set hidden(bool newValue) {
+    if (newValue == _currentPrefs.hidden) return;
+    _currentPrefs = PreferencesState(
+        theme: _currentPrefs.theme,
+        showFloatingButton: _currentPrefs.showFloatingButton,
+        sorting: _currentPrefs.sorting,
+        hidden: newValue);
+    notifyListeners();
+    _savePreferences();
+  }
 
   Stream<bool> get showFloatingButton {
     return _currentPrefs.showFloatingButton.stream.asBroadcastStream();
   }
-
-  // set showFloatingButton(bool newValue) {
-  //   _currentPrefs.showFloatingButton.stream.listen((onData) {
-  //     if (newValue == onData) return;
-  //   });
-  //   _currentPrefs = PreferencesState(
-  //       showFloatingButton: StreamController.broadcast().sink..add(newValue),
-  //       theme: _currentPrefs.theme,
-  //       sorting: _currentPrefs.sorting);
-  //   notifyListeners();
-  //   _savePreferences();
-  // }
 
   // note(Naga): the name can cannot be as the getter,
   // if it set as the getter you will get error.
@@ -60,7 +62,8 @@ class PreferencesNotifier with ChangeNotifier {
     _currentPrefs = PreferencesState(
         theme: newValue,
         showFloatingButton: _currentPrefs.showFloatingButton,
-        sorting: _currentPrefs.sorting);
+        sorting: _currentPrefs.sorting,
+        hidden: _currentPrefs.hidden);
     notifyListeners();
     _savePreferences();
   }
@@ -72,7 +75,8 @@ class PreferencesNotifier with ChangeNotifier {
     _currentPrefs = PreferencesState(
         theme: _currentPrefs.theme,
         sorting: newValue,
-        showFloatingButton: _currentPrefs.showFloatingButton);
+        showFloatingButton: _currentPrefs.showFloatingButton,
+        hidden: _currentPrefs.hidden);
     notifyListeners();
     _savePreferences();
   }
@@ -92,7 +96,8 @@ class PreferencesNotifier with ChangeNotifier {
     _currentPrefs = PreferencesState(
         theme: AppTheme.values[themeIndex],
         showFloatingButton: BehaviorSubject.seeded(_showFloatingButton),
-        sorting: Sorting.values[sortIndex]);
+        sorting: Sorting.values[sortIndex],
+        hidden: _currentPrefs.hidden);
 
     notifyListeners();
   }
