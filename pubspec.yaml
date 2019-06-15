@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^2.0.1+1
+  provider: ^3.0.0
   path: ^1.6.2
   path_provider: ^1.1.0
   flutter_statusbarcolor: ^0.2.0
