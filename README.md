@@ -53,7 +53,6 @@ samples, guidance on mobile development, and a full API reference.
 
 - PayPal me: [https://www.paypal.me/eagle6789](https://www.paypal.me/eagle6789)
 - PayPal account: me49544@gmail.com
-- Bitcoin: 1AP6bypSaFt7ptFydmjuWWWS8a9MCWRt3m
 
 ## Contact me
 
