@@ -47,7 +47,7 @@ class CoreNotifier extends ChangeNotifier {
       Sorting sortedBy: Sorting.Type,
       reverse: false,
       recursive: false,
-      hidden: false}) async {
+      showHidden: false}) async {
     Directory _path = Directory(path);
 
     int start = DateTime.now().millisecondsSinceEpoch;
@@ -68,7 +68,7 @@ class CoreNotifier extends ChangeNotifier {
       }).toList();
 
       // Removing hidden files & folders from the list
-      if (!hidden) {
+      if (showHidden) {
         print("Core: excluding hidden");
         _files.removeWhere((test) {
           print("\tfiltering: " + test.name);
@@ -92,7 +92,7 @@ class CoreNotifier extends ChangeNotifier {
     int start = DateTime.now().millisecondsSinceEpoch;
 
     List<dynamic> files =
-        await getFoldersAndFiles(path, recursive: recursive, hidden: hidden)
+        await getFoldersAndFiles(path, recursive: recursive, showHidden: hidden)
           ..retainWhere(
               (test) => test.name.toLowerCase().contains(query.toLowerCase()));
 

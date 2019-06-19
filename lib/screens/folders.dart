@@ -61,7 +61,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
           child: Consumer<CoreNotifier>(
             builder: (context, model, child) => FutureBuilder<List<dynamic>>(
                   future: model.getFoldersAndFiles(widget.path,
-                      hidden: preferences.hidden),
+                      showHidden: preferences.hidden),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.none:
