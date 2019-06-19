@@ -1,4 +1,6 @@
 // framework
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // package
@@ -27,18 +29,6 @@ class FolderContextDialog extends StatelessWidget {
                       },
                       child: ListTile(
                           leading: Icon(Icons.delete), title: Text('Delete'))),
-                  SimpleDialogOption(
-                    onPressed: () {
-                      OpenFile.open(fileOrDir.path);
-
-                      Navigator.pop(context);
-                    },
-                    child: ListTile(
-                        leading: Icon(
-                          Icons.share,
-                        ),
-                        title: Text('Share')),
-                  )
                 ],
               ),
             ));
@@ -58,6 +48,15 @@ class FileContextDialog extends StatelessWidget {
               child: SimpleDialog(
                 title: Text(name),
                 children: <Widget>[
+                  // open option
+                  SimpleDialogOption(
+                    onPressed: () async {
+                      OpenFile.open(path);
+                      Navigator.pop(context);
+                    },
+                    child: ListTile(
+                        leading: Icon(Icons.launch), title: Text('Open')),
+                  ),
                   SimpleDialogOption(
                       onPressed: () {
                         Navigator.pop(context);
@@ -66,9 +65,7 @@ class FileContextDialog extends StatelessWidget {
                       child: ListTile(
                           leading: Icon(Icons.delete), title: Text('Delete'))),
                   SimpleDialogOption(
-                    onPressed: () {
-                      OpenFile.open(path);
-
+                    onPressed: () async {
                       Navigator.pop(context);
                     },
                     child: ListTile(
