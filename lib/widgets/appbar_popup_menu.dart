@@ -1,6 +1,12 @@
-import 'package:basic_file_manager/screens/settings.dart';
+// framework
 import 'package:flutter/material.dart';
+
+// packages
 import 'package:provider/provider.dart';
+
+// local files
+import 'package:basic_file_manager/screens/about.dart';
+import 'package:basic_file_manager/screens/settings.dart';
 import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/widgets/create_dialog.dart';
 
@@ -23,6 +29,10 @@ class AppBarPopupMenu extends StatelessWidget {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Settings()));
             }
+            else if (value == "about") {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => AboutScreen()));
+            }
           },
           itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
                 const PopupMenuItem<String>(
@@ -35,6 +45,7 @@ class AppBarPopupMenu extends StatelessWidget {
                     value: 'settings', child: Text('Settings')),
                 const PopupMenuItem<String>(
                     value: 'about', child: Text('About')),
+                //...
               ]),
     );
   }
