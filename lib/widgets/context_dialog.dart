@@ -1,7 +1,4 @@
 // framework
-import 'dart:io';
-
-import 'package:basic_file_manager/screens/details.dart';
 import 'package:flutter/material.dart';
 
 // package
@@ -10,6 +7,7 @@ import 'package:open_file/open_file.dart';
 
 // local
 import 'package:basic_file_manager/notifiers/core.dart';
+import 'package:basic_file_manager/screens/details.dart';
 
 class FolderContextDialog extends StatelessWidget {
   final fileOrDir;
