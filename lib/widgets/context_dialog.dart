@@ -1,6 +1,7 @@
 // framework
 import 'dart:io';
 
+import 'package:basic_file_manager/screens/details.dart';
 import 'package:flutter/material.dart';
 
 // package
@@ -73,7 +74,29 @@ class FileContextDialog extends StatelessWidget {
                           Icons.share,
                         ),
                         title: Text('Share')),
+                  ),
+                  SimpleDialogOption(
+                    onPressed: () async {
+                      // Poping off context dialog after navigating through details screen
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailScreen(
+                                    path: path,
+                                  )));
+                    },
+                    child: ListTile(
+                        leading: Container(
+                          child: Image.asset(
+                            "assets/details.png",
+                          ),
+                          height: 24.0,
+                          width: 24.0,
+                        ),
+                        title: Text('Details')),
                   )
+                  //...
                 ],
               ),
             ));
