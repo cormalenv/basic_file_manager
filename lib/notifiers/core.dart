@@ -68,10 +68,11 @@ class CoreNotifier extends ChangeNotifier {
       }).toList();
 
       // Removing hidden files & folders from the list
-      if (showHidden) {
+      if (!showHidden) {
         print("Core: excluding hidden");
         _files.removeWhere((test) {
-          print("\tfiltering: " + test.name);
+          bool _isHidden =  test.name.startsWith('.') == true;
+          print("\tfiltering: " + test.name +"\n\t\thidden: $_isHidden");
           return test.name.startsWith('.') == true;
         });
       }
@@ -119,6 +120,8 @@ class CoreNotifier extends ChangeNotifier {
     }
   }
 
+  /// Create folder by path
+  /// * i.e: `.createFolderByPath("/storage/emulated/0/", "folder name" )`
   Future<Directory> createFolderByPath(String path, String folderName) async {
     print("Creating folder: $folderName @ $path");
     var _directory = Directory(p.join(path, folderName));
