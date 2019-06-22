@@ -71,8 +71,8 @@ class CoreNotifier extends ChangeNotifier {
       if (!showHidden) {
         print("Core: excluding hidden");
         _files.removeWhere((test) {
-          bool _isHidden =  test.name.startsWith('.') == true;
-          print("\tfiltering: " + test.name +"\n\t\thidden: $_isHidden");
+          bool _isHidden = test.name.startsWith('.') == true;
+          print("\tfiltering: " + test.name + "\n\t\thidden: $_isHidden");
           return test.name.startsWith('.') == true;
         });
       }
@@ -85,11 +85,14 @@ class CoreNotifier extends ChangeNotifier {
     return utils.sort(_files, sortedBy, reverse: reverse);
   }
 
-  Future<List<dynamic>> search(String path, String query,
-      {bool matchCase: false,
-      regex: false,
-      recursive: true,
-      bool hidden: false}) async {
+  /// search for files and folder in current directory & sub-directories,
+  /// and return [File] or [Directory]
+  ///
+  /// [path]: start point
+  ///
+  /// [query]: regex or simple string
+  Future<List<dynamic>> search(dynamic path, String query,
+      {bool matchCase: false, recursive: true, bool hidden: false}) async {
     int start = DateTime.now().millisecondsSinceEpoch;
 
     List<dynamic> files =
