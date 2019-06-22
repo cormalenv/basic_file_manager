@@ -12,6 +12,7 @@ class ThemesDialog extends StatelessWidget {
 
     return Consumer<PreferencesNotifier>(
       builder: (context, model, child) => SimpleDialog(
+          title: Text("Choose Theme"),
           children: AppTheme.values
               .map((theme) => SimpleDialogOption(
                     child: Container(
@@ -24,6 +25,7 @@ class ThemesDialog extends StatelessWidget {
                               model.theme = value;
                             },
                             groupValue: preferences.theme,
+                            activeColor: appThemeData(theme).accentColor,
                           ),
                           Text(theme.toString()),
                         ],
