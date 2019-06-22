@@ -15,6 +15,8 @@ class CreateFolderDialog extends StatefulWidget {
 class _CreateFileDialogState extends State<CreateFolderDialog> {
   TextEditingController _textEditingController;
   bool _allowedFolderName = true;
+  // if creating hidden folder
+  bool _hidden = false;
   @override
   void initState() {
     _textEditingController = TextEditingController();
@@ -34,7 +36,7 @@ class _CreateFileDialogState extends State<CreateFolderDialog> {
             builder: (context) => ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: SimpleDialog(
-                  title: Text("Add New Folder"),
+                  title: Text("Create new folder"),
                   contentPadding: EdgeInsets.all(20),
                   children: <Widget>[
                     // album textfield
@@ -46,15 +48,27 @@ class _CreateFileDialogState extends State<CreateFolderDialog> {
                           onChanged: (data) {
                             // Not allowed characters for album name, since we are creating real
                             // folder on linux
-                            if (data.contains("/") ||
-                                data.contains('NULL') ||
-                                data.contains('\0')) {
+                            if (data.contains("/")) {
                               if (_allowedFolderName == true) {
                                 setState(() {
                                   _allowedFolderName = false;
                                 });
                               }
                             } else {
+                              // creating a hidden folder helper text
+                              if (data.startsWith('.')) {
+                                if (_hidden == false) {
+                                  setState(() {
+                                    _hidden = true;
+                                  });
+                                }
+                              } else {
+                                if (_hidden == true) {
+                                  setState(() {
+                                    _hidden = false;
+                                  });
+                                }
+                              }
                               if (_allowedFolderName == false) {
                                 setState(() {
                                   _allowedFolderName = true;
@@ -63,11 +77,15 @@ class _CreateFileDialogState extends State<CreateFolderDialog> {
                             }
                           },
                           decoration: InputDecoration(
-                              helperText: " Disallowed Chararcters: / \0",
-                              helperStyle: !_allowedFolderName
-                                  ? TextStyle(color: Colors.red)
-                                  : TextStyle(),
-                              hintText: "Folder Name"),
+                              errorText: !_allowedFolderName
+                                  ? " Disallowed Chararcters: /"
+                                  : null,
+                              hintText: "Folder Name",
+                              helperText:
+                                  _hidden ? "This folder will be hidden" : null,
+                              helperStyle: _hidden
+                                  ? TextStyle(color: Colors.deepOrange)
+                                  : TextStyle()),
                         ))
                       ],
                     ),
