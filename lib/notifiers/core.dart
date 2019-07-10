@@ -18,6 +18,11 @@ import 'package:basic_file_manager/models/file.dart';
 import 'package:basic_file_manager/models/folder.dart';
 
 class CoreNotifier extends ChangeNotifier {
+  CoreNotifier() {
+    initialize();
+  }
+
+  // Currnent user path
   Directory currentPath;
 
   Future<String> getRootPath() async {

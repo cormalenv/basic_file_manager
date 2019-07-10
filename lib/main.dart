@@ -12,12 +12,11 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:dynamic_theme/dynamic_theme.dart'; // for dynamic theming
 
 main() {
-  CoreNotifier core = CoreNotifier();
-  core.initialize();
+
   runApp(MultiProvider(
     providers: [
       ValueListenableProvider(builder: (context) => ValueNotifier(true)),
-      ChangeNotifierProvider(builder: (context) => core),
+      ChangeNotifierProvider(builder: (context) => CoreNotifier()),
       ChangeNotifierProvider(builder: (context) => PreferencesNotifier()),
     ],
     child: MyApp(),
