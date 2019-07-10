@@ -1,7 +1,11 @@
-import 'package:basic_file_manager/notifiers/preferences.dart';
-import 'package:basic_file_manager/widgets/themes_dialog.dart';
+// packages
+import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:dynamic_theme/theme_switcher_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// local
+import 'package:basic_file_manager/notifiers/preferences.dart';
 
 class Settings extends StatefulWidget {
   Settings({Key key}) : super(key: key);
@@ -12,7 +16,6 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    final preferences = Provider.of<PreferencesNotifier>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text("Settings"),
@@ -21,22 +24,18 @@ class _SettingsState extends State<Settings> {
           builder: (context, model, child) => ListView(
                 padding: EdgeInsets.all(10.0),
                 children: <Widget>[
+                  // Theme
                   ListTile(
                     leading: Text(
                       "Theme",
                     ),
-                    title: Text(
-                      "${preferences.theme.toString().split('.')[1]}",
-                    ),
-                    onTap: () => showDialog(
-                        context: context, builder: (context) => ThemesDialog()),
+                    onTap: () => showChooser(),
                     dense: true,
                   ),
                   Divider(),
-                  // floating action button
+                  // Floating action button
                   StreamBuilder<bool>(
-                    stream:
-                        preferences.showFloatingButton, //	a	Stream<int>	or	null
+                    stream: model.showFloatingButton, //	a	Stream<int>	or	null
                     builder:
                         (BuildContext context, AsyncSnapshot<bool> snapshot) {
                       if (snapshot.hasError)
@@ -45,19 +44,25 @@ class _SettingsState extends State<Settings> {
                         case ConnectionState.none:
                           return Text('Select	lot');
                         case ConnectionState.waiting:
-                          return Center(child: Text('Awaiting	bids...'));
+                          return SwitchListTile.adaptive(
+                            // avoid showing text ..
+                            value: snapshot.data ?? false,
+                            onChanged: (value) =>
+                                model.setFloatingButtonEnabled(value),
+                            title: Text("Show Floating Action Button"),
+                          );
                         case ConnectionState.active:
                           return SwitchListTile.adaptive(
                             value: snapshot.data,
                             onChanged: (value) =>
-                                preferences.setFloatingButtonEnabled(value),
+                                model.setFloatingButtonEnabled(value),
                             title: Text("Show Floating Action Button"),
                           );
                         case ConnectionState.done:
                           return SwitchListTile.adaptive(
                             value: snapshot.data,
                             onChanged: (value) =>
-                                preferences.setFloatingButtonEnabled(value),
+                                model.setFloatingButtonEnabled(value),
                             title: Text("Show Floating Action Button"),
                           );
                       }
@@ -67,12 +72,25 @@ class _SettingsState extends State<Settings> {
 
                   Divider(),
                   SwitchListTile.adaptive(
-                    value: preferences.hidden,
-                    onChanged: (value) => preferences.hidden = value,
+                    value: model.hidden,
+                    onChanged: (value) => model.hidden = value,
                     title: Text("Show Hidden"),
                   )
                 ],
               ),
         ));
+  }
+
+  /// Credit: from https://github.com/Norbert515/dynamic_theme/blob/master/example/lib/main.dart
+  void showChooser() {
+    showDialog<void>(
+        context: context,
+        builder: (context) {
+          return BrightnessSwitcherDialog(
+            onSelectedTheme: (brightness) {
+              DynamicTheme.of(context).setBrightness(brightness);
+            },
+          );
+        });
   }
 }

@@ -13,13 +13,11 @@ class PreferencesBlocError extends Error {
 // State design pattern
 class PreferencesState {
   final bool hidden;
-  final AppTheme theme;
   final sorting;
   final BehaviorSubject<bool> showFloatingButton;
 
   const PreferencesState(
-      {@required this.theme,
-      @required this.hidden,
+      {@required this.hidden,
       @required this.showFloatingButton,
       @required this.sorting});
 }
@@ -28,7 +26,6 @@ class PreferencesNotifier with ChangeNotifier {
   // Initial preferences' values
   PreferencesState _currentPrefs = PreferencesState(
       showFloatingButton: BehaviorSubject.seeded(true),
-      theme: AppTheme.Light,
       sorting: Sorting.Type,
       hidden: false);
 
@@ -36,7 +33,6 @@ class PreferencesNotifier with ChangeNotifier {
   set hidden(bool newValue) {
     if (newValue == _currentPrefs.hidden) return;
     _currentPrefs = PreferencesState(
-        theme: _currentPrefs.theme,
         showFloatingButton: _currentPrefs.showFloatingButton,
         sorting: _currentPrefs.sorting,
         hidden: newValue);
@@ -48,24 +44,11 @@ class PreferencesNotifier with ChangeNotifier {
     return _currentPrefs.showFloatingButton.stream.asBroadcastStream();
   }
 
-  // note(Naga): the name can cannot be as the getter,
+  // Note(Naga): the name can cannot be as the getter,
   // if it set as the getter you will get error.
   // If someone has a better way of doing this, please do not hesitate
   setFloatingButtonEnabled(bool newValue) {
     _currentPrefs.showFloatingButton.add(newValue);
-    _savePreferences();
-  }
-
-  AppTheme get theme => _currentPrefs.theme;
-
-  set theme(AppTheme newValue) {
-    if (newValue == _currentPrefs.theme) return;
-    _currentPrefs = PreferencesState(
-        theme: newValue,
-        showFloatingButton: _currentPrefs.showFloatingButton,
-        sorting: _currentPrefs.sorting,
-        hidden: _currentPrefs.hidden);
-    notifyListeners();
     _savePreferences();
   }
 
@@ -74,7 +57,6 @@ class PreferencesNotifier with ChangeNotifier {
   set sorting(Sorting newValue) {
     if (newValue == _currentPrefs.sorting) return;
     _currentPrefs = PreferencesState(
-        theme: _currentPrefs.theme,
         sorting: newValue,
         showFloatingButton: _currentPrefs.showFloatingButton,
         hidden: _currentPrefs.hidden);
@@ -90,12 +72,11 @@ class PreferencesNotifier with ChangeNotifier {
     print("Saving preferences");
     var sharedPrefs = await SharedPreferences.getInstance();
     // '0' is the initial value
-    int themeIndex = sharedPrefs.getInt('theme') ?? 0;
+
     int sortIndex = sharedPrefs.getInt('sort') ?? 0;
     bool _showFloatingButton =
         sharedPrefs.getBool('showFloatingButton') ?? true;
     _currentPrefs = PreferencesState(
-        theme: AppTheme.values[themeIndex],
         showFloatingButton: BehaviorSubject.seeded(_showFloatingButton),
         sorting: Sorting.values[sortIndex],
         hidden: _currentPrefs.hidden);
@@ -106,7 +87,6 @@ class PreferencesNotifier with ChangeNotifier {
   Future<void> _savePreferences() async {
     print("Saving preferences");
     var sharedPrefs = await SharedPreferences.getInstance();
-    await sharedPrefs.setInt('theme', _currentPrefs.theme.index);
     await sharedPrefs.setInt('sort', _currentPrefs.sorting.index);
     // note(Naga): if someone has a better way of doing this, please do not hesitate
     // listening on showFloatingButton strean then assign a value
@@ -115,7 +95,5 @@ class PreferencesNotifier with ChangeNotifier {
     });
   }
 }
-
-enum AppTheme { Light, Gray, Dark }
 
 enum Sorting { Type, Size, Date, Alpha, TypeDate, TypeSize }
