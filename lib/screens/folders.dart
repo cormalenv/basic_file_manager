@@ -1,9 +1,9 @@
 // framework
 import 'package:basic_file_manager/widgets/context_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
 
 // packages
+import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 
 // local files
@@ -60,6 +60,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
           },
           child: Consumer<CoreNotifier>(
             builder: (context, model, child) => FutureBuilder<List<dynamic>>(
+                  // This function Invoked every time user go back to the previous directory
                   future: model.getFoldersAndFiles(widget.path,
                       showHidden: preferences.hidden),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -70,10 +71,10 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
                       case ConnectionState.waiting:
                         return Center(child: CircularProgressIndicator());
                       case ConnectionState.done:
-                        if (snapshot.hasError)
+                        if (snapshot.hasError) {
                           return Center(
                               child: Text('Error: ${snapshot.error}'));
-                        if (snapshot.data.length != 0)
+                        } else if (snapshot.data.length != 0) {
                           return GridView.builder(
                               physics: const AlwaysScrollableScrollPhysics(),
                               controller: _scrollController,
@@ -88,14 +89,16 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
                                 // folder
                                 if (snapshot.data[index] is MyFolder) {
                                   return FolderWidget(
-                                      fileOrDir: snapshot.data[index]);
+                                      path: snapshot.data[index].path,
+                                      name: snapshot.data[index].name);
 
                                   // file
                                 } else if (snapshot.data[index] is MyFile) {
                                   return FileWidget(
                                     name: snapshot.data[index].name,
                                     onTap: () {
-                                      OpenFile.open(snapshot.data[index].path);
+                                      _printFuture(OpenFile.open(
+                                          snapshot.data[index].path));
                                     },
                                     onLongPress: () {
                                       showDialog(
@@ -109,10 +112,11 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
                                   );
                                 }
                               });
-                        else
+                        } else {
                           return Center(
-                            child: Text("Empty Folder!"),
+                            child: Text("empty directory!"),
                           );
+                        }
                     }
                     return null; // unreachable
                   },
@@ -147,7 +151,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  _checkHome() {
+  Widget _checkHome() {
     if (widget.home == true)
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -166,8 +170,13 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
       return Text(
         widget.path,
         style: const TextStyle(fontSize: 13.0),
+        maxLines: 2,
       );
   }
+}
+
+_printFuture(Future<String> open) async {
+  print("Opening: " + await open);
 }
 
 class FolderFloatingActionButton extends StatelessWidget {

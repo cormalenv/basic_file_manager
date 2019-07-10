@@ -28,19 +28,26 @@ class AppBarPopupMenu extends StatelessWidget {
             } else if (value == "settings") {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Settings()));
+            } else if (value == "about") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AboutScreen()));
+            } else if (value == "paste") {
+              model.pasteByPath(path);
             }
-            else if (value == "about") {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AboutScreen()));
-            }
+            //...
           },
           itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+                PopupMenuItem<String>(
+                    enabled: model.copyList.isNotEmpty,
+                    value: 'paste',
+                    child: Text('Paste Here')),
+
                 const PopupMenuItem<String>(
                     value: 'refresh', child: Text('Refresh')),
                 const PopupMenuItem<String>(
                     value: 'sort', child: Text('Sort By')),
                 const PopupMenuItem<String>(
-                    value: 'folder', child: Text('New Folder +')),
+                    value: 'folder', child: Text('New Folder')),
                 const PopupMenuItem<String>(
                     value: 'settings', child: Text('Settings')),
                 const PopupMenuItem<String>(

@@ -3,23 +3,26 @@ import 'package:basic_file_manager/widgets/context_dialog.dart';
 import 'package:flutter/material.dart';
 
 class FolderWidget extends StatelessWidget {
-  final fileOrDir;
-  const FolderWidget({@required this.fileOrDir});
+  final String path;
+  final String name;
+
+  const FolderWidget({@required this.path, @required this.name});
   @override
   Widget build(BuildContext context) {
     return Container(
         child: InkWell(
       borderRadius: BorderRadius.circular(10.0),
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Folders(path: fileOrDir.path)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Folders(path: path)));
       },
       onLongPress: () {
         showDialog(
             context: context,
-            builder: (context) => FolderContextDialog(fileOrDir: fileOrDir));
+            builder: (context) => FolderContextDialog(
+                  path: path,
+                  name: name,
+                ));
       },
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
@@ -28,8 +31,9 @@ class FolderWidget extends StatelessWidget {
           size: 50.0,
         ),
         Text(
-          fileOrDir.name,
+          name,
           style: TextStyle(fontSize: 11.5),
+          maxLines: 2,
           overflow: TextOverflow.ellipsis,
         )
       ]),

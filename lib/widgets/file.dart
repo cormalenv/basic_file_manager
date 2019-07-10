@@ -23,6 +23,7 @@ class FileWidget extends StatelessWidget {
         Text(
           name,
           overflow: TextOverflow.ellipsis,
+          maxLines: 2,
           style: TextStyle(fontSize: 11.5),
         )
       ]),

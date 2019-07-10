@@ -1,17 +1,15 @@
 // framework
-import 'dart:io';
-
-import 'package:basic_file_manager/animations.dart';
-import 'package:basic_file_manager/models/file.dart';
-import 'package:basic_file_manager/models/folder.dart';
 import 'package:flutter/material.dart';
+
+// packages
+import 'package:provider/provider.dart';
 
 // local files
 import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/screens/folders.dart';
-import 'package:provider/provider.dart';
-
-// packages
+import 'package:basic_file_manager/animations.dart';
+import 'package:basic_file_manager/models/file.dart';
+import 'package:basic_file_manager/models/folder.dart';
 
 class Search extends SearchDelegate<String> {
   final String path;
@@ -19,7 +17,6 @@ class Search extends SearchDelegate<String> {
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    // TODO: implement buildActions
     return null;
   }
 
