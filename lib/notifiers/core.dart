@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 
 // packages
 import 'package:path/path.dart' as p;
+import 'package:rxdart/rxdart.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -77,7 +78,7 @@ class CoreNotifier extends ChangeNotifier {
         });
       }
     } catch (e) {
-      CoreNotifierError(e);
+      throw CoreNotifierError(e.toString());
     }
 
     int end = DateTime.now().millisecondsSinceEpoch;
@@ -105,17 +106,20 @@ class CoreNotifier extends ChangeNotifier {
     return files;
   }
 
-  Future<void> delete(path, String type) async {
+  Future<void> delete(String path) async {
     try {
-      if (type == "File") {
-        print("Deleting file @ ${path.path}");
-        await File(path.path).delete();
+      if (FileSystemEntity.isFileSync(path)) {
+        print("Deleting file @ $path");
+        await File(path).delete();
         notifyListeners();
-      } else if (type == "Directory") {
-        print("Deleting folder @ ${path.path}");
-        await Directory(path.path)
+      } else if (FileSystemEntity.isDirectorySync(path)) {
+        print("Deleting folder @ $path");
+        await Directory(path)
             .delete(recursive: true)
             .then((_) => notifyListeners());
+      } else if (FileSystemEntity.isFileSync(path)) {
+        print("Deleting link @ $path");
+        await Link(path).delete(recursive: true).then((_) => notifyListeners());
       }
       notifyListeners();
     } catch (e) {
@@ -144,6 +148,34 @@ class CoreNotifier extends ChangeNotifier {
 
   Future<void> refresh() async {
     notifyListeners();
+  }
+
+  BehaviorSubject<bool> _pasteMode = BehaviorSubject.seeded(false);
+
+  Stream<bool> get pasteMode => _pasteMode.stream.asBroadcastStream();
+
+  List<dynamic> copyList = [];
+
+  void copyByPath(List<String> objects) {
+    copyList.addAll(objects);
+    _pasteMode.add(true);
+  }
+
+  void pasteByPath(String path) async {
+    copyList.forEach((f) {
+      if (FileSystemEntity.isDirectorySync(f)) {
+      } else if (FileSystemEntity.isFileSync(f)) {
+        try {
+          File(f).copySync(p.join(path, p.split(f).last));
+        } on FileSystemException catch (e) {
+          print(e);
+          // throw CoreNotifierError(e.toString());
+        }
+      }
+    });
+    copyList.clear();
+    notifyListeners();
+    _pasteMode.add(false);
   }
 }
 
