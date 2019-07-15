@@ -9,10 +9,10 @@ import 'package:basic_file_manager/screens/folders.dart';
 // packages
 import 'package:provider/provider.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:dynamic_theme/dynamic_theme.dart'; // for dynamic theming
+import 'package:dynamic_theme/dynamic_theme.dart';
+//import 'package:simple_permissions/simple_permissions.dart';
 
 main() {
-
   runApp(MultiProvider(
     providers: [
       ValueListenableProvider(builder: (context) => ValueNotifier(true)),
@@ -22,6 +22,8 @@ main() {
     child: MyApp(),
   ));
 }
+
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
               brightness: brightness,
             ),
         themedWidgetBuilder: (context, theme) {
+          //_requestPermissions();
           FlutterStatusbarcolor.setStatusBarColor(theme.primaryColor);
           return MaterialApp(
             title: 'Flutter Demo',

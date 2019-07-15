@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // package
 import 'package:provider/provider.dart';
-import 'package:open_file/open_file.dart';
+//import 'package:open_file/open_file.dart';
 
 // local
 import 'package:basic_file_manager/notifiers/core.dart';
@@ -87,7 +87,7 @@ class FileContextDialog extends StatelessWidget {
                   // open option
                   SimpleDialogOption(
                     onPressed: () async {
-                      OpenFile.open(path);
+                    //  OpenFile.open(path);
                       Navigator.pop(context);
                     },
                     child: ListTile(

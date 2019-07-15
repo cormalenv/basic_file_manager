@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 // packages
 import 'package:path/path.dart' as p;
 import 'package:rxdart/rxdart.dart';
-import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 
 // local files
@@ -16,6 +15,7 @@ import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/utils.dart' as utils;
 import 'package:basic_file_manager/models/file.dart';
 import 'package:basic_file_manager/models/folder.dart';
+//import 'package:simple_permissions/simple_permissions.dart';
 
 class CoreNotifier extends ChangeNotifier {
   CoreNotifier() {
@@ -33,19 +33,21 @@ class CoreNotifier extends ChangeNotifier {
   List<dynamic> subFolders = [];
 
   Future<void> initialize() async {
+    /// Requesting permissions if not granted
+
+    // if (!await SimplePermissions.checkPermission(
+    //         Permission.ReadExternalStorage) &&
+    //     !await SimplePermissions.checkPermission(
+    //         Permission.WriteExternalStorage)) {
+    //   await SimplePermissions.requestPermission(Permission.ReadExternalStorage)
+    //       .then((_) async => await SimplePermissions.requestPermission(
+    //           Permission.WriteExternalStorage));
+    //   notifyListeners();
+    //}
+
     print("Initializing");
     // requesting permisssions
     currentPath = await getExternalStorageDirectory();
-    if (!await SimplePermissions.checkPermission(
-            Permission.ReadExternalStorage) ||
-        !await SimplePermissions.checkPermission(
-            Permission.WriteExternalStorage)) {
-      await SimplePermissions.requestPermission(Permission.ReadExternalStorage)
-          .then((_) async => await SimplePermissions.requestPermission(
-              Permission.WriteExternalStorage));
-
-      notifyListeners();
-    }
   }
 
   Future<List<dynamic>> getFoldersAndFiles(String path,
@@ -146,9 +148,8 @@ class CoreNotifier extends ChangeNotifier {
       }
       return _directory;
     } catch (e) {
-      CoreNotifierError(e);
+      throw CoreNotifierError(e);
     }
-    return _directory;
   }
 
   Future<void> refresh() async {
@@ -187,4 +188,9 @@ class CoreNotifier extends ChangeNotifier {
 class CoreNotifierError extends Error {
   final String message;
   CoreNotifierError(this.message);
+
+  @override
+  String toString() {
+    return message;
+  }
 }

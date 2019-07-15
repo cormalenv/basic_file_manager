@@ -1,6 +1,9 @@
+// framework
+import 'package:flutter/material.dart';
+
+// local
 import 'package:basic_file_manager/screens/folders.dart';
 import 'package:basic_file_manager/widgets/context_dialog.dart';
-import 'package:flutter/material.dart';
 
 class FolderWidget extends StatelessWidget {
   final String path;
