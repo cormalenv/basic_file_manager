@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 // local files
 import 'package:basic_file_manager/notifiers/core.dart';
 import 'package:basic_file_manager/screens/folders.dart';
-import 'package:basic_file_manager/animations.dart';
 import 'package:basic_file_manager/models/file.dart';
 import 'package:basic_file_manager/models/folder.dart';
 
@@ -120,7 +119,7 @@ class _Results extends StatelessWidget {
             onTap: () {
               Navigator.push(
                   context,
-                  AnimationlessMaterialPageRoute(
+                  MaterialPageRoute(
                       builder: (context) => Folders(
                             path: results[index].path,
                           )));
@@ -132,7 +131,12 @@ class _Results extends StatelessWidget {
             title: Text(results[index].name),
             onTap: () {},
           );
-        }
+        } else
+          return ListTile(
+            leading: Icon(Icons.image),
+            title: Text(results[index].name),
+            onTap: () {},
+          );
       },
     );
   }

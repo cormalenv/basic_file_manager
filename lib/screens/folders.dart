@@ -60,67 +60,65 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
           },
           child: Consumer<CoreNotifier>(
             builder: (context, model, child) => FutureBuilder<List<dynamic>>(
-                  // This function Invoked every time user go back to the previous directory
-                  future: model.getFoldersAndFiles(widget.path,
-                      showHidden: preferences.hidden),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                        return Text('Press button to start.');
-                      case ConnectionState.active:
-                      case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
-                      case ConnectionState.done:
-                        if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (snapshot.data.length != 0) {
-                          return GridView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              controller: _scrollController,
-                              key: PageStorageKey(widget.path),
-                              padding: EdgeInsets.only(
-                                  left: 10.0, right: 10.0, top: 0),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 4),
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (context, index) {
-                                // folder
-                                if (snapshot.data[index] is MyFolder) {
-                                  return FolderWidget(
-                                      path: snapshot.data[index].path,
-                                      name: snapshot.data[index].name);
+              // This function Invoked every time user go back to the previous directory
+              future: model.getFoldersAndFiles(widget.path,
+                  showHidden: preferences.hidden),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Text('Press button to start.');
+                  case ConnectionState.active:
+                  case ConnectionState.waiting:
+                    return Center(child: CircularProgressIndicator());
+                  case ConnectionState.done:
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.data.length != 0) {
+                      return GridView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          controller: _scrollController,
+                          key: PageStorageKey(widget.path),
+                          padding:
+                              EdgeInsets.only(left: 10.0, right: 10.0, top: 0),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            // folder
+                            if (snapshot.data[index] is MyFolder) {
+                              return FolderWidget(
+                                  path: snapshot.data[index].path,
+                                  name: snapshot.data[index].name);
 
-                                  // file
-                                } else if (snapshot.data[index] is MyFile) {
-                                  return FileWidget(
-                                    name: snapshot.data[index].name,
-                                    onTap: () {
-                                      _printFuture(OpenFile.open(
-                                          snapshot.data[index].path));
-                                    },
-                                    onLongPress: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              FileContextDialog(
-                                                path: snapshot.data[index].path,
-                                                name: snapshot.data[index].name,
-                                              ));
-                                    },
-                                  );
-                                }
-                              });
-                        } else {
-                          return Center(
-                            child: Text("empty directory!"),
-                          );
-                        }
+                              // file
+                            } else if (snapshot.data[index] is MyFile) {
+                              return FileWidget(
+                                name: snapshot.data[index].name,
+                                onTap: () {
+                                  _printFuture(
+                                      OpenFile.open(snapshot.data[index].path));
+                                },
+                                onLongPress: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => FileContextDialog(
+                                            path: snapshot.data[index].path,
+                                            name: snapshot.data[index].name,
+                                          ));
+                                },
+                              );
+                            }
+                          });
+                    } else {
+                      return Center(
+                        child: Text("empty directory!"),
+                      );
                     }
-                    return null; // unreachable
-                  },
-                ),
+                }
+                return null; // unreachable
+              },
+            ),
           ),
         ),
 
@@ -151,6 +149,7 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  // Checking if the current folder is the home directory
   Widget _checkHome() {
     if (widget.home == true)
       return Column(
@@ -173,8 +172,6 @@ class _FoldersState extends State<Folders> with AutomaticKeepAliveClientMixin {
         maxLines: 2,
       );
   }
-
-
 }
 
 _printFuture(Future<String> open) async {
@@ -191,7 +188,7 @@ class FolderFloatingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (enabled == true) {
       return FloatingActionButton(
-        tooltip: "Create folder here ...",
+        tooltip: "Create Folder",
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child: Icon(Icons.add),
