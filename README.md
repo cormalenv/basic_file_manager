@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # basic_file_manager
 
 A simple **application** for managing files on Android devices using Flutter framework
@@ -127,4 +126,3 @@ samples, guidance on mobile development, and a full API reference.
 ## Inspiration
 
 - [Filip Hracek](https://github.com/filiph) from Google and the Boring Show
->>>>>>> c457c690260eb37a0891ae0a4504fa0723de6020
