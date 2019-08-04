@@ -15,7 +15,7 @@ import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/utils.dart' as utils;
 import 'package:basic_file_manager/models/file.dart';
 import 'package:basic_file_manager/models/folder.dart';
-//import 'package:simple_permissions/simple_permissions.dart';
+import 'package:simple_permissions/simple_permissions.dart';
 
 class CoreNotifier extends ChangeNotifier {
   CoreNotifier() {
@@ -33,17 +33,14 @@ class CoreNotifier extends ChangeNotifier {
   List<dynamic> subFolders = [];
 
   Future<void> initialize() async {
-    /// Requesting permissions if not granted
+    //Requesting permissions if not granted
 
-    // if (!await SimplePermissions.checkPermission(
-    //         Permission.ReadExternalStorage) &&
-    //     !await SimplePermissions.checkPermission(
-    //         Permission.WriteExternalStorage)) {
-    //   await SimplePermissions.requestPermission(Permission.ReadExternalStorage)
-    //       .then((_) async => await SimplePermissions.requestPermission(
-    //           Permission.WriteExternalStorage));
-    //   notifyListeners();
-    //}
+    if (!await SimplePermissions.checkPermission(
+        Permission.WriteExternalStorage)) {
+      await SimplePermissions.requestPermission(
+          Permission.WriteExternalStorage);
+      notifyListeners();
+    }
 
     print("Initializing");
     // requesting permisssions
@@ -80,7 +77,7 @@ class CoreNotifier extends ChangeNotifier {
         print("Core: excluding hidden");
         _files.removeWhere((test) {
           bool _isHidden = test.name.startsWith('.') == true;
-          print("\tfiltering: " + test.name + "\n\t\thidden: $_isHidden");
+          print("\sfiltering: " + test.name + "\n\s\sidden: $_isHidden");
           return test.name.startsWith('.') == true;
         });
       }
@@ -89,7 +86,7 @@ class CoreNotifier extends ChangeNotifier {
     }
 
     int end = DateTime.now().millisecondsSinceEpoch;
-    print("\nElapsed time [Core]: ${end - start}ms");
+    print("[Core] Elapsed time : ${end - start} ms");
     return utils.sort(_files, sortedBy, reverse: reverse);
   }
 
@@ -109,7 +106,7 @@ class CoreNotifier extends ChangeNotifier {
               (test) => test.name.toLowerCase().contains(query.toLowerCase()));
 
     int end = DateTime.now().millisecondsSinceEpoch;
-    print("Search time: ${end - start}ms");
+    print("Search time: ${end - start} ms");
     return files;
   }
 
