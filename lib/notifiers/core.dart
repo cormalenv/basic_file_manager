@@ -9,13 +9,15 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:rxdart/rxdart.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 // local files
 import 'package:basic_file_manager/notifiers/preferences.dart';
 import 'package:basic_file_manager/utils.dart' as utils;
 import 'package:basic_file_manager/models/file.dart';
 import 'package:basic_file_manager/models/folder.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+
+
 
 class CoreNotifier extends ChangeNotifier {
   CoreNotifier() {
@@ -34,13 +36,17 @@ class CoreNotifier extends ChangeNotifier {
 
   Future<void> initialize() async {
     //Requesting permissions if not granted
+    if(await PermissionHandler().checkPermissionStatus(PermissionGroup.storage) != PermissionStatus.granted){
+      await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+      notifyListeners();
+    }
 
-    if (!await SimplePermissions.checkPermission(
+/*    if (!await SimplePermissions.checkPermission(
         Permission.WriteExternalStorage)) {
       await SimplePermissions.requestPermission(
           Permission.WriteExternalStorage);
       notifyListeners();
-    }
+    }*/
 
     print("Initializing");
     // requesting permisssions
